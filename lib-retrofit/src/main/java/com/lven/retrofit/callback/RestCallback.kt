@@ -1,0 +1,34 @@
+package com.lven.retrofit.callback
+
+import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+
+/**
+ * 请求回调
+ */
+class RestCallback(
+    private val callback: ICallback,
+    private val download: Boolean,
+    private val dirName: String ,
+    private val fileName: String
+) :
+    Callback<ResponseBody>, IResultCallback {
+    override fun onFailure(call: Call<ResponseBody>, e: Throwable) {
+        onResultError(callback, download, "${e.message}")
+    }
+
+    override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+        onResultSuccess(callback, download, response.body()!!)
+    }
+
+    override fun getFileName(): String {
+        return fileName
+    }
+
+    override fun getDirName(): String {
+        return dirName
+    }
+
+}
