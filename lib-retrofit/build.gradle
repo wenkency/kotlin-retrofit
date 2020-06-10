@@ -2,6 +2,10 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
+// 远程仓库
+apply plugin: 'com.github.dcendents.android-maven'
+group='com.github.wenkency'
+
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
