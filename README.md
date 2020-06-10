@@ -37,6 +37,7 @@ public class BaseApplication extends Application {
                 .register(this);
     }
 }
+```
 
 ### 使用方式
 ```
