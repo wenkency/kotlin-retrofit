@@ -1,9 +1,6 @@
 package com.lven.retrofit.core
 
 import com.lven.retrofit.callback.ICallback
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Single
-import io.reactivex.rxjava3.functions.Consumer
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import okio.Buffer
@@ -40,11 +37,8 @@ class RestMultipartBody(private val requestBody: RequestBody, private val callba
                 mCurrentLength += byteCount.toFloat()
                 // 上传进度回调
                 val progress = mCurrentLength * 1.0f / totalLength
-                Single.just(progress)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(Consumer {
-                        callback.onProgress(progress, mCurrentLength, totalLength)
-                    })
+                // 在
+                callback.onProgress(progress, mCurrentLength, totalLength)
             }
         }
         val buffer = Okio.buffer(forwardingSink)

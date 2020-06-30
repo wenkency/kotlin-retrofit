@@ -3,9 +3,6 @@ package com.lven.retrofit.utils
 import android.os.Environment
 import com.lven.retrofit.callback.ICallback
 import com.lven.retrofit.config.RestConfig
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Single
-import io.reactivex.rxjava3.functions.Consumer
 import java.io.*
 
 /**
@@ -38,12 +35,7 @@ fun writeToDisk(
         while (bis.read(data).also { count = it } != -1) {
             current += count.toLong()
             // 回调
-            Single.just(current)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(Consumer {
-                    // 回调
-                    callback.onProgress(it * 100f / total, it.toFloat(), total)
-                })
+            callback.onProgress(current * 100f / total, current.toFloat(), total)
             bos.write(data, 0, count)
         }
         bos.flush()

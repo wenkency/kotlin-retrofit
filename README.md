@@ -15,7 +15,7 @@ allprojects {
     }
 }
 
-implementation 'com.github.wenkency:kotlin-retrofit:1.2.0'
+implementation 'com.github.wenkency:kotlin-retrofit:1.3.0'
 implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 implementation 'com.squareup.retrofit2:retrofit:2.9.0'
 implementation 'com.google.code.gson:gson:2.8.6'
