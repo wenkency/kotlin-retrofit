@@ -2,12 +2,10 @@ package com.lven.retrofit.core
 
 import com.google.gson.Gson
 import com.lven.retrofit.api.RestService
-import com.lven.retrofit.api.RxRestService
 import com.lven.retrofit.config.RestConfig
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
-import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import java.io.File
 import java.util.concurrent.TimeUnit
 
@@ -49,7 +47,6 @@ object RestCreator {
     private val retrofit by lazy {
         Retrofit.Builder()
             .baseUrl(RestConfig.baseUrl)
-            .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
             .client(httpClient)
             .build()
     }
@@ -62,22 +59,11 @@ object RestCreator {
         return getRetrofit(url).create(RestService::class.java)
     }
 
-
-    fun getRxService(): RxRestService {
-        return retrofit.create(RxRestService::class.java)
-    }
-
-    fun getRxService(url: String): RxRestService {
-        return getRetrofit(url).create(RxRestService::class.java)
-    }
-
-
     private fun getRetrofit(url: String): Retrofit {
         var retrofit = map[url]
         if (retrofit == null) {
             retrofit = Retrofit.Builder()
                 .baseUrl(RestConfig.baseUrl)
-                .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
                 .client(httpClient)
                 .build()
             map[url] = retrofit

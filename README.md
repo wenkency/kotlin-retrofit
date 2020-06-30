@@ -15,16 +15,11 @@ allprojects {
     }
 }
 
-implementation 'com.github.wenkency:kotlin-retrofit:1.1.0'
-implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+implementation 'com.github.wenkency:kotlin-retrofit:1.2.0'
 implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
-implementation 'androidx.core:core-ktx:1.3.0'
-implementation 'androidx.appcompat:appcompat:1.1.0'
 implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-implementation 'com.squareup.retrofit2:adapter-rxjava3:2.9.0'
 implementation 'com.google.code.gson:gson:2.8.6'
-implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
-implementation 'io.reactivex.rxjava3:rxjava:3.0.0
+
 
 ```
 ### Application初始化
@@ -51,7 +46,7 @@ public class BaseApplication extends Application {
 ### 使用方式
 ```
 private fun requestNet() {
-    RxRetrofitPresenter.post(activity, "post", Bean("100"),
+    RetrofitPresenter.post(activity, "post", Bean("100"),
         object : BeanCallback<String>() {
 
             override fun onError(code: Int, message: String) {

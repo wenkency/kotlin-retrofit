@@ -39,8 +39,5 @@ dependencies {
     compileOnly this.dependLibs.coreKtx
     compileOnly this.dependLibs.appcompat
     compileOnly this.dependLibs.retrofit
-    compileOnly this.dependLibs.adapterRxjava3
     compileOnly this.dependLibs.gson
-    compileOnly this.dependLibs.rxandroid
-    compileOnly this.dependLibs.rxjava
 }
