@@ -2,7 +2,7 @@ package com.lven.retrofit.utils
 
 import android.text.TextUtils
 import com.lven.retrofit.callback.ICallback
-import com.lven.retrofit.callback.getType
+import com.lven.retrofit.config.RestConfig
 import com.lven.retrofit.core.RestCreator
 import com.lven.retrofit.core.RestMultipartBody
 import okhttp3.MediaType
@@ -45,8 +45,12 @@ fun multipartBody(params: MutableMap<String, Any>, callback: ICallback): Multipa
  * 创建请求体，针对Json请求
  */
 fun requestBody(params: MutableMap<String, Any>): RequestBody {
-    return RestCreator.gson.toJson(params)
-        .toRequestBody("application/json;charset=UTF-8".toMediaType())
+    var content = RestCreator.gson.toJson(params)
+    // 这里是Base64编码
+    if (RestConfig.isBase64) {
+        content = Base64.encode(content.toByteArray())
+    }
+    return content.toRequestBody("application/json;charset=UTF-8".toMediaType())
 }
 
 /**

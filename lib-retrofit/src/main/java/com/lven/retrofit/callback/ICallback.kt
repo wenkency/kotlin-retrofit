@@ -1,10 +1,5 @@
 package com.lven.retrofit.callback
 
-import java.lang.reflect.GenericArrayType
-import java.lang.reflect.ParameterizedType
-import java.lang.reflect.Type
-import java.lang.reflect.TypeVariable
-
 /**
  * 回调接口
  */

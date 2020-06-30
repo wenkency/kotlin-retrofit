@@ -12,6 +12,9 @@ import okhttp3.Interceptor
 object RestConfig {
     lateinit var context: Context
     private var isDebug = false
+
+    // 是不是Base64编码--给自己用
+    var isBase64 = false
     private var debugUrl = ""
     internal var baseUrl = ""
         get() {
@@ -59,6 +62,10 @@ object RestConfig {
 
     fun debug(debug: Boolean) = apply {
         this.isDebug = debug
+    }
+
+    fun base64(isBase64: Boolean) = apply {
+        this.isBase64 = isBase64
     }
 
     fun addInterceptor(interceptor: Interceptor) = apply {
