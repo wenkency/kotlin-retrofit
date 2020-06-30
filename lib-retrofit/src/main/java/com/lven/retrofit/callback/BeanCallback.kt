@@ -23,7 +23,7 @@ abstract class BeanCallback<T> : ICallback {
 }
 
 fun Any.getType(): Type {
-    return getType(this.javaClass.genericSuperclass!!)
+    return getType(javaClass.genericSuperclass!!)
 }
 
 fun getType(type: Type): Type {

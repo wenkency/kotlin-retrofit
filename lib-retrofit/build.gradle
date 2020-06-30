@@ -4,18 +4,17 @@ apply plugin: 'kotlin-android-extensions'
 
 // 远程仓库
 apply plugin: 'com.github.dcendents.android-maven'
-group='com.github.wenkency'
+group = 'com.github.wenkency'
 
 android {
-    compileSdkVersion 29
-    buildToolsVersion "29.0.3"
+    compileSdkVersion this.app.compileSdkVersion
+    buildToolsVersion this.app.buildToolsVersion
 
     defaultConfig {
-        minSdkVersion 14
-        targetSdkVersion 29
+        minSdkVersion this.app.minSdkVersion
+        targetSdkVersion this.app.targetSdkVersion
         versionCode 1
         versionName "1.0"
-        consumerProguardFiles "consumer-rules.pro"
     }
 
     buildTypes {
@@ -24,17 +23,24 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
 }
 
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
-    implementation 'androidx.core:core-ktx:1.3.0'
-    implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-    implementation 'com.squareup.retrofit2:adapter-rxjava3:2.9.0'
-    implementation 'com.google.code.gson:gson:2.8.6'
-    implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
-    implementation 'io.reactivex.rxjava3:rxjava:3.0.0'
+    compileOnly this.dependLibs.kotlinStdlib
+    compileOnly this.dependLibs.kotlinReflect
+    compileOnly this.dependLibs.coreKtx
+    compileOnly this.dependLibs.appcompat
+    compileOnly this.dependLibs.retrofit
+    compileOnly this.dependLibs.adapterRxjava3
+    compileOnly this.dependLibs.gson
+    compileOnly this.dependLibs.rxandroid
+    compileOnly this.dependLibs.rxjava
 }

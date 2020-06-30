@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import com.lven.retrofit.RetrofitPresenter
 import com.lven.retrofit.RxRetrofitPresenter
 import com.lven.retrofit.callback.BeanCallback
 
@@ -33,6 +34,12 @@ class FirstFragment : Fragment() {
     }
 
     private fun requestNet() {
+        RetrofitPresenter.post(activity, "post", Bean("100"),
+            object : BeanCallback<String>() {
+                override fun onSucceed(result: String) {
+                    btn.text = result
+                }
+            })
         RxRetrofitPresenter.post(activity, "post", Bean("100"),
             object : BeanCallback<String>() {
 

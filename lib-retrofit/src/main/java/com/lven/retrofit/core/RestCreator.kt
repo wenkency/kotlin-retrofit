@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit
 
 object RestCreator {
     private const val time = 60L
+    private val map = mutableMapOf<String, Retrofit>()
     val gson: Gson by lazy {
         Gson()
     }
@@ -57,7 +58,30 @@ object RestCreator {
         return retrofit.create(RestService::class.java)
     }
 
+    fun getService(url: String): RestService {
+        return getRetrofit(url).create(RestService::class.java)
+    }
+
+
     fun getRxService(): RxRestService {
         return retrofit.create(RxRestService::class.java)
+    }
+
+    fun getRxService(url: String): RxRestService {
+        return getRetrofit(url).create(RxRestService::class.java)
+    }
+
+
+    private fun getRetrofit(url: String): Retrofit {
+        var retrofit = map[url]
+        if (retrofit == null) {
+            retrofit = Retrofit.Builder()
+                .baseUrl(RestConfig.baseUrl)
+                .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
+                .client(httpClient)
+                .build()
+            map[url] = retrofit
+        }
+        return retrofit!!
     }
 }
