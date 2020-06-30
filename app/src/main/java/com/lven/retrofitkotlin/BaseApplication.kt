@@ -2,7 +2,6 @@ package com.lven.retrofitkotlin
 
 import androidx.multidex.MultiDexApplication
 import com.lven.retrofit.config.RestConfig
-import com.lven.retrofit.interceptor.CacheInterceptor
 
 class BaseApplication : MultiDexApplication() {
     override fun onCreate() {

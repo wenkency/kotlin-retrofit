@@ -2,11 +2,15 @@ package com.lven.retrofit.utils
 
 import android.text.TextUtils
 import com.lven.retrofit.callback.ICallback
+import com.lven.retrofit.callback.getType
 import com.lven.retrofit.core.RestCreator
 import com.lven.retrofit.core.RestMultipartBody
 import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
 import java.net.URLConnection
 
@@ -41,10 +45,8 @@ fun multipartBody(params: MutableMap<String, Any>, callback: ICallback): Multipa
  * 创建请求体，针对Json请求
  */
 fun requestBody(params: MutableMap<String, Any>): RequestBody {
-    return RequestBody.create(
-        MediaType.get("application/json;charset=UTF-8"),
-        RestCreator.gson.toJson(params)
-    )
+    return RestCreator.gson.toJson(params)
+        .toRequestBody("application/json;charset=UTF-8".toMediaType())
 }
 
 /**
@@ -56,18 +58,17 @@ private fun fileToBody(
     file: File,
     onCallback: ICallback
 ) {
-    val fileBody: RequestBody =
-        RequestBody.create(MediaType.get(guessFileType(file.absolutePath)), file)
+    val fileBody: RequestBody = file.asRequestBody(guessFileType(file.absolutePath))
     builder.addFormDataPart(key, file.name, RestMultipartBody(fileBody, onCallback))
 }
 
 /**
  * 猜测文件类型
  */
-private fun guessFileType(path: String): String {
+private fun guessFileType(path: String): MediaType {
     var contentType = URLConnection.getFileNameMap().getContentTypeFor(path)
     if (contentType == null) {
         contentType = "application/octet-stream"
     }
-    return contentType
+    return contentType.toMediaType()
 }

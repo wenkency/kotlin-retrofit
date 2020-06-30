@@ -3,10 +3,7 @@ package com.lven.retrofit.core
 import com.lven.retrofit.callback.ICallback
 import okhttp3.MediaType
 import okhttp3.RequestBody
-import okio.Buffer
-import okio.BufferedSink
-import okio.ForwardingSink
-import okio.Okio
+import okio.*
 import java.io.IOException
 
 /**
@@ -26,8 +23,7 @@ class RestMultipartBody(private val requestBody: RequestBody, private val callba
         return requestBody.contentLength()
     }
 
-    @Throws(IOException::class)
-    override fun writeTo(sink: BufferedSink?) {
+    override fun writeTo(sink: BufferedSink) {
         val totalLength = contentLength().toFloat()
         // 用OKIO的代理类
         val forwardingSink: ForwardingSink = object : ForwardingSink(sink) {
@@ -41,7 +37,7 @@ class RestMultipartBody(private val requestBody: RequestBody, private val callba
                 callback.onProgress(progress, mCurrentLength, totalLength)
             }
         }
-        val buffer = Okio.buffer(forwardingSink)
+        val buffer = forwardingSink.buffer()
         requestBody.writeTo(buffer)
         buffer.flush()
     }

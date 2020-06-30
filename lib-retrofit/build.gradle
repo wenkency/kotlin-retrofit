@@ -40,5 +40,7 @@ dependencies {
     compileOnly this.dependLibs.coreKtx
     compileOnly this.dependLibs.appcompat
     compileOnly this.dependLibs.retrofit
+    compileOnly this.dependLibs.okhttp
+    compileOnly this.dependLibs.okio
     compileOnly this.dependLibs.gson
 }

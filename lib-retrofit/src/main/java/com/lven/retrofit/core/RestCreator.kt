@@ -8,6 +8,7 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import java.io.File
 import java.util.concurrent.TimeUnit
+import javax.net.ssl.HostnameVerifier
 
 object RestCreator {
     private const val time = 60L
@@ -20,7 +21,9 @@ object RestCreator {
             .connectTimeout(time, TimeUnit.SECONDS)
             .readTimeout(time, TimeUnit.SECONDS)
             .writeTimeout(time, TimeUnit.SECONDS)
-            .hostnameVerifier { _, _ -> true }
+            .hostnameVerifier(HostnameVerifier { _, _ ->
+                true
+            })
         // 添加自定义拦截器
         var interceptors = RestConfig.interceptors
         if (interceptors.isNotEmpty()) {
