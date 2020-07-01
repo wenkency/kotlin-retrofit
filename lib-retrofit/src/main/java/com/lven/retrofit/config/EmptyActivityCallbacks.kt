@@ -4,7 +4,10 @@ import android.app.Activity
 import android.app.Application
 import android.os.Bundle
 
-open class ActivityCallbacks : Application.ActivityLifecycleCallbacks {
+/**
+ * Activity生命周期回调类
+ */
+open class EmptyActivityCallbacks : Application.ActivityLifecycleCallbacks {
     override fun onActivityPaused(activity: Activity) {
     }
 
