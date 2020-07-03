@@ -4,7 +4,7 @@ package com.lven.retrofit.callback
  * 回调接口
  */
 interface ICallback {
-    fun onBefore(headers: MutableMap<String, String>) {}
+    fun onBefore(headers: MutableMap<String, String>,params: MutableMap<String, Any>) {}
 
     fun onAfter() {}
 

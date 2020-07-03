@@ -11,7 +11,7 @@ import retrofit2.Response
 class RestCallback(
     private val callback: ICallback,
     private val download: Boolean,
-    private val dirName: String ,
+    private val dirName: String,
     private val fileName: String
 ) :
     Callback<ResponseBody>, IResultCallback {
@@ -20,7 +20,11 @@ class RestCallback(
     }
 
     override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-        onResultSuccess(callback, download, response.body()!!)
+        try {
+            onResultSuccess(callback, download, response.body())
+        } catch (e: Throwable) {
+            onFailure(call, e)
+        }
     }
 
     override fun getFileName(): String {

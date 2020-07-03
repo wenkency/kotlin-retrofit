@@ -1,7 +1,9 @@
 package com.lven.retrofit.core
 
+import android.util.Log
 import com.lven.retrofit.api.RestMethod
 import com.lven.retrofit.callback.ICallback
+import com.lven.retrofit.config.RestConfig
 import com.lven.retrofit.utils.multipartBody
 import com.lven.retrofit.utils.requestBody
 import okhttp3.ResponseBody
@@ -14,8 +16,13 @@ class RestCall(private val client: RestClient) {
      */
     fun request(callback: ICallback): Call<ResponseBody> {
         // 调用
-        callback.onBefore(client.headers)
-
+        callback.onBefore(client.headers, client.params)
+        // 如果是Debug，就打印一下日志
+        if (RestConfig.isDebug) {
+            Log.e("LOG Url", client.url)
+            Log.e("LOG Head", RestCreator.gson.toJson(client.headers))
+            Log.e("LOG Params", RestCreator.gson.toJson(client.params))
+        }
         val service = RestCreator.getService()
 
         return when (client.method) {

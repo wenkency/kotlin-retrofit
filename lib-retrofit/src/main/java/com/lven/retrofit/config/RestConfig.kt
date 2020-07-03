@@ -11,7 +11,7 @@ import okhttp3.Interceptor
  */
 object RestConfig {
     lateinit var context: Context
-    private var isDebug = false
+    internal var isDebug = false
 
     // 是不是Base64编码--给自己用
     var isBase64 = false

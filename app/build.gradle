@@ -44,6 +44,7 @@ dependencies {
     implementation this.dependLibs.appcompat
     implementation this.dependLibs.retrofit
     implementation this.dependLibs.okhttp
+    implementation this.dependLibs.oklog
     implementation this.dependLibs.okio
     implementation this.dependLibs.adapterRxjava3
     implementation this.dependLibs.gson

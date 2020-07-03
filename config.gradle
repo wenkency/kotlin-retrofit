@@ -15,6 +15,7 @@ ext {
             appcompat     : 'androidx.appcompat:appcompat:1.1.0',
             retrofit      : 'com.squareup.retrofit2:retrofit:2.9.0',
             okhttp        : "com.squareup.okhttp3:okhttp:4.7.2",
+            oklog              : 'com.squareup.okhttp3:logging-interceptor:4.7.2',
             okio          : "com.squareup.okio:okio:2.6.0",
             adapterRxjava3: 'com.squareup.retrofit2:adapter-rxjava3:2.9.0',
             gson          : 'com.google.code.gson:gson:2.8.6',
