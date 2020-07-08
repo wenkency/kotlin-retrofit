@@ -5,6 +5,7 @@ import com.lven.retrofit.api.RestMethod
 import com.lven.retrofit.callback.ICallback
 import com.lven.retrofit.callback.RestCallback
 import com.lven.retrofit.core.RestClient
+import java.io.File
 
 /**
  * 普通网络请求
@@ -19,7 +20,7 @@ object RetrofitPresenter : IRetrofit {
         headers: MutableMap<String, String>?,
         params: MutableMap<String, Any>?,
         callback: ICallback,
-        dirName: String,
+        fileDir: File?,
         fileName: String
     ) {
         getRequest(activity, method, url, headers, params, callback)
@@ -27,7 +28,7 @@ object RetrofitPresenter : IRetrofit {
                 RestCallback(
                     callback,
                     method == RestMethod.DOWNLOAD,
-                    dirName,
+                    fileDir,
                     fileName
                 )
             )

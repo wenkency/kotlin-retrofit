@@ -43,4 +43,6 @@ dependencies {
     compileOnly this.dependLibs.okhttp
     compileOnly this.dependLibs.okio
     compileOnly this.dependLibs.gson
+    compileOnly this.dependLibs.rxandroid
+    compileOnly this.dependLibs.rxjava
 }

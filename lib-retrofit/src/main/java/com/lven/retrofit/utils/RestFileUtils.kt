@@ -3,6 +3,9 @@ package com.lven.retrofit.utils
 import android.os.Environment
 import com.lven.retrofit.callback.ICallback
 import com.lven.retrofit.config.RestConfig
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.functions.Consumer
 import java.io.*
 
 /**
@@ -16,7 +19,7 @@ import java.io.*
  */
 fun writeToDisk(
     inputStream: InputStream,
-    dir: String,
+    dir: File?,
     name: String,
     callback: ICallback,
     total: Float
@@ -34,9 +37,14 @@ fun writeToDisk(
         var count: Int
         while (bis.read(data).also { count = it } != -1) {
             current += count.toLong()
-            // 回调
-            callback.onProgress(current * 100f / total, current.toFloat(), total)
             bos.write(data, 0, count)
+            // 回调，在主线程去
+            Single.just(current)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(Consumer {
+                    callback.onProgress(it * 100f / total, it.toFloat(), total)
+                })
+
         }
         bos.flush()
         fos.flush()
@@ -51,16 +59,21 @@ fun writeToDisk(
     return file
 }
 
-fun createDir(dirName: String): File {
-    var dir = if (checkSDK()) File(dirName) else RestConfig.context.filesDir
-    if (!dir.exists()) {
-        dir.mkdirs()
+/**
+ * 下载文件，默认在：RestConfig.context.filesDir
+ */
+fun createFile(dir: File?, name: String): File {
+    if (dir == null) {
+        return File(RestConfig.context.filesDir, name)
     }
-    return dir
+    return File(dir, name)
 }
 
-fun createFile(dir: String, name: String): File {
-    return File(createDir(dir), name)
+/**
+ * 通过这个方法，找到下载的文件
+ */
+fun createFile(name: String): File {
+    return createFile(null, name)
 }
 
 // 检查是否SDK准备好

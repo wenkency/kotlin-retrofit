@@ -4,6 +4,7 @@ import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.File
 
 /**
  * 请求回调
@@ -11,7 +12,7 @@ import retrofit2.Response
 class RestCallback(
     private val callback: ICallback,
     private val download: Boolean,
-    private val dirName: String,
+    private val fileDir: File?,
     private val fileName: String
 ) :
     Callback<ResponseBody>, IResultCallback {
@@ -31,8 +32,7 @@ class RestCallback(
         return fileName
     }
 
-    override fun getDirName(): String {
-        return dirName
+    override fun getFileDir(): File? {
+        return fileDir
     }
-
 }

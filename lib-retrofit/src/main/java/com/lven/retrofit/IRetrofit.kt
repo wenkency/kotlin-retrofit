@@ -4,6 +4,7 @@ import android.app.Activity
 import androidx.collection.ArrayMap
 import com.lven.retrofit.api.RestMethod
 import com.lven.retrofit.callback.ICallback
+import java.io.File
 import kotlin.reflect.KProperty1
 import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.jvm.isAccessible
@@ -19,7 +20,7 @@ interface IRetrofit {
         headers: MutableMap<String, String>? = null,
         params: MutableMap<String, Any>? = null,
         callback: ICallback,
-        dirName: String = "",
+        fileDir: File? = null,
         fileName: String = ""
     )
 
@@ -207,21 +208,20 @@ interface IRetrofit {
         url: String,
         headers: MutableMap<String, String>? = null,
         params: MutableMap<String, Any>? = null,
-        callback: ICallback,
-        dirName: String,
-        fileName: String
+        fileDir: File?,
+        fileName: String,
+        callback: ICallback
     ) {
-        enqueue(activity, RestMethod.DOWNLOAD, url, headers, params, callback, dirName, fileName)
+        enqueue(activity, RestMethod.DOWNLOAD, url, headers, params, callback, fileDir, fileName)
     }
 
     fun download(
         activity: Activity? = null,
         url: String,
-        callback: ICallback,
-        dirName: String,
-        fileName: String
+        fileName: String,
+        callback: ICallback
     ) {
-        enqueue(activity, RestMethod.DOWNLOAD, url, null, null, callback, dirName, fileName)
+        download(activity, url, null, null, null, fileName, callback)
     }
 }
 

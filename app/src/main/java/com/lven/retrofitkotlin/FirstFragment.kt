@@ -9,6 +9,9 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.lven.retrofit.RetrofitPresenter
 import com.lven.retrofit.callback.BeanCallback
+import com.lven.retrofit.callback.ICallback
+import com.lven.retrofit.utils.createFile
+import java.io.File
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
@@ -30,9 +33,29 @@ class FirstFragment : Fragment() {
             //findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
             requestNet()
         }
+        var image = createFile("image.png")
+        if (image.exists() && image.isFile && image.length() > 0) {
+            btn.text = "${image.absolutePath}:${image.length()}"
+        }
     }
 
     private fun requestNet() {
+        val url =
+            "https://img.car-house.cn/Upload/activity/20200424/J3GEiBhpAMfkesHCm7EWaQGwxDDwNbMc.png"
+        RetrofitPresenter.download(activity, url, "image.png", object : ICallback {
+            // 进度
+            override fun onProgress(progress: Float, current: Float, total: Float) {
+                btn.text = "$progress:$current:$total"
+            }
+
+            // 成功
+            override fun onSuccess(file: File) {
+
+            }
+        })
+    }
+
+    fun post() {
         RetrofitPresenter.post(activity, "post", Bean("100"),
             object : BeanCallback<String>() {
                 override fun onSucceed(result: String) {

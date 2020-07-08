@@ -5,7 +5,12 @@ import com.lven.retrofit.api.RestErrorCode
 import com.lven.retrofit.config.RestConfig
 import com.lven.retrofit.utils.Base64
 import com.lven.retrofit.utils.writeToDisk
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.functions.Consumer
+import io.reactivex.rxjava3.schedulers.Schedulers
 import okhttp3.ResponseBody
+import java.io.File
 
 interface IResultCallback {
 
@@ -23,9 +28,26 @@ interface IResultCallback {
         body?.let {
             try {
                 if (download) {
-                    var total = it.contentLength()
-                    var inputStream = it.byteStream()
-                    writeToDisk(inputStream, getDirName(), getFileName(), callback, total.toFloat())
+
+                    Single.just(it)
+                        .map { body ->
+                            val total = body.contentLength()
+                            val inputStream = body.byteStream()
+                            // 进度回调在里面
+                            writeToDisk(
+                                inputStream,
+                                getFileDir(),
+                                getFileName(),
+                                callback,
+                                total.toFloat()
+                            )
+                        }
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(Consumer { file ->
+                            callback.onSuccess(file)
+                        })
+
                 } else {
                     var result = it.string()
                     if (RestConfig.isDebug) {
@@ -47,5 +69,5 @@ interface IResultCallback {
 
     fun getFileName(): String
 
-    fun getDirName(): String
+    fun getFileDir(): File?
 }
