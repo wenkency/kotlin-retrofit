@@ -10,7 +10,7 @@ import okhttp3.Response
 class CacheInterceptor(private val maxAge: Long = 0L) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
-        var cacheControl = request.cacheControl.toString()
+        var cacheControl = request.cacheControl().toString()
         if (maxAge > 0 && TextUtils.isEmpty(cacheControl)) {
             cacheControl = "public, max-age=$maxAge"
         }

@@ -39,7 +39,12 @@ dependencies {
     compileOnly this.dependLibs.kotlinReflect
     compileOnly this.dependLibs.coreKtx
     compileOnly this.dependLibs.appcompat
-    compileOnly this.dependLibs.retrofit
+    compileOnly (this.dependLibs.retrofit){
+        exclude group: 'com.android.support'
+        exclude group: 'com.squareup.okio'
+        exclude group: 'com.squareup.okhttp3'
+        exclude group: 'com.squareup.okhttp'
+    }
     compileOnly this.dependLibs.okhttp
     compileOnly this.dependLibs.okio
     compileOnly this.dependLibs.gson

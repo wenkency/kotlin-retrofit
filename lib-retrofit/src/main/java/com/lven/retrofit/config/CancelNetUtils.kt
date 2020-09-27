@@ -13,7 +13,7 @@ object CancelNetUtils {
      */
     fun cancel(activity: Activity) {
         // 取消在请求的网络
-        var runningCalls = RestCreator.httpClient.dispatcher.runningCalls()
+        var runningCalls = RestCreator.httpClient.dispatcher().runningCalls()
         if (runningCalls.isNotEmpty()) {
             for (call in runningCalls) {
                 activity.tag().let {

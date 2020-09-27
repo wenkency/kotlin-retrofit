@@ -6,11 +6,8 @@ import com.lven.retrofit.config.RestConfig
 import com.lven.retrofit.core.RestCreator
 import com.lven.retrofit.core.RestMultipartBody
 import okhttp3.MediaType
-import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import okhttp3.RequestBody.Companion.asRequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
 import java.net.URLConnection
 
@@ -50,7 +47,8 @@ fun requestBody(params: MutableMap<String, Any>): RequestBody {
     if (RestConfig.isBase64) {
         content = Base64.encode(content.toByteArray())
     }
-    return content.toRequestBody("application/json;charset=UTF-8".toMediaType())
+    return RequestBody.create(MediaType.get("application/json;charset=UTF-8"),content)
+    // return content.toRequestBody("application/json;charset=UTF-8".toMediaType())
 }
 
 /**
@@ -62,7 +60,8 @@ private fun fileToBody(
     file: File,
     onCallback: ICallback
 ) {
-    val fileBody: RequestBody = file.asRequestBody(guessFileType(file.absolutePath))
+//    val fileBody: RequestBody = file.asRequestBody(guessFileType(file.absolutePath))
+    val fileBody: RequestBody = RequestBody.create(guessFileType(file.absolutePath),file)
     builder.addFormDataPart(key, file.name, RestMultipartBody(fileBody, onCallback))
 }
 
@@ -74,5 +73,5 @@ private fun guessFileType(path: String): MediaType {
     if (contentType == null) {
         contentType = "application/octet-stream"
     }
-    return contentType.toMediaType()
+    return MediaType.get(contentType)
 }
