@@ -16,7 +16,12 @@ allprojects {
 }
 
 implementation 'com.github.wenkency:kotlin-retrofit:1.9.0'
-implementation 'com.squareup.retrofit2:retrofit:2.8.0'
+implementation ('com.squareup.retrofit2:retrofit:2.8.0'){
+    exclude group: 'com.android.support'
+    exclude group: 'com.squareup.okio'
+    exclude group: 'com.squareup.okhttp3'
+    exclude group: 'com.squareup.okhttp'
+}
 implementation "com.squareup.okhttp3:okhttp:3.12.1"
 implementation "com.squareup.okio:okio:2.6.0"
 implementation 'com.google.code.gson:gson:2.8.6'
