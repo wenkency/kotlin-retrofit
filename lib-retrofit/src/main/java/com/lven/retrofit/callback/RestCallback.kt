@@ -1,5 +1,6 @@
 package com.lven.retrofit.callback
 
+import com.lven.retrofit.core.RestClient
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -13,16 +14,17 @@ class RestCallback(
     private val callback: ICallback,
     private val download: Boolean,
     private val fileDir: File?,
-    private val fileName: String
+    private val fileName: String,
+    private val client: RestClient
 ) :
     Callback<ResponseBody>, IResultCallback {
     override fun onFailure(call: Call<ResponseBody>, e: Throwable) {
-        onResultError(callback, download, "${e.message}")
+        onResultError(callback, download, "${e.message}",client)
     }
 
     override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
         try {
-            onResultSuccess(callback, download, response.body())
+            onResultSuccess(callback, download, response.body(),client)
         } catch (e: Throwable) {
             onFailure(call, e)
         }

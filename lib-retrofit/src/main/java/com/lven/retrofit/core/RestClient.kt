@@ -2,6 +2,7 @@ package com.lven.retrofit.core
 
 import androidx.collection.ArrayMap
 import com.lven.retrofit.api.RestMethod
+import com.lven.retrofit.api.RestService
 import com.lven.retrofit.callback.ICallback
 import com.lven.retrofit.config.RestConfig
 import okhttp3.ResponseBody
@@ -9,7 +10,7 @@ import retrofit2.Call
 
 
 /**
- * API 客户端
+ * API 客户端，请求的信息都在这里
  */
 class RestClient(builder: RestfulBuilder) {
     val url: String = builder.url
@@ -34,8 +35,8 @@ class RestClient(builder: RestfulBuilder) {
     /**
      * 发起请求
      */
-    fun request(callback: ICallback): Call<ResponseBody> {
-        return RestCall(this).request(callback)
+    fun request(callback: ICallback, service: RestService): Call<ResponseBody> {
+        return RestCall(this).request(callback, service)
     }
 
     class RestfulBuilder {

@@ -10,6 +10,9 @@ import java.io.File
 import java.util.concurrent.TimeUnit
 import javax.net.ssl.HostnameVerifier
 
+/**
+ * 请求接口的构造器
+ */
 object RestCreator {
     private const val time = 60L
     private val map = mutableMapOf<String, Retrofit>()
@@ -47,17 +50,17 @@ object RestCreator {
 
         builder.build()
     }
-    private val retrofit by lazy {
-        Retrofit.Builder()
-            .baseUrl(RestConfig.baseUrl)
-            .client(httpClient)
-            .build()
-    }
 
+    /**
+     * 使用配置的URL创建请求接口
+     */
     fun getService(): RestService {
-        return retrofit.create(RestService::class.java)
+        return getService(RestConfig.baseUrl)
     }
 
+    /**
+     * 用户可以根据URL创建请求
+     */
     fun getService(url: String): RestService {
         return getRetrofit(url).create(RestService::class.java)
     }
@@ -66,7 +69,7 @@ object RestCreator {
         var retrofit = map[url]
         if (retrofit == null) {
             retrofit = Retrofit.Builder()
-                .baseUrl(RestConfig.baseUrl)
+                .baseUrl(url)
                 .client(httpClient)
                 .build()
             map[url] = retrofit

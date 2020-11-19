@@ -3,7 +3,9 @@ package com.lven.retrofit
 import android.app.Activity
 import androidx.collection.ArrayMap
 import com.lven.retrofit.api.RestMethod
+import com.lven.retrofit.api.RestService
 import com.lven.retrofit.callback.ICallback
+import com.lven.retrofit.core.RestCreator
 import java.io.File
 import kotlin.reflect.KProperty1
 import kotlin.reflect.full.declaredMemberProperties
@@ -23,6 +25,7 @@ interface IRetrofit {
         fileDir: File? = null,
         fileName: String = ""
     )
+
 
     // == get method===================================================================================
     fun get(

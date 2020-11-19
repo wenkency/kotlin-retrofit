@@ -15,7 +15,7 @@ allprojects {
     }
 }
 
-implementation 'com.github.wenkency:kotlin-retrofit:1.9.0'
+implementation 'com.github.wenkency:kotlin-retrofit:2.0.0'
 implementation ('com.squareup.retrofit2:retrofit:2.8.0'){
     exclude group: 'com.android.support'
     exclude group: 'com.squareup.okio'
@@ -25,8 +25,12 @@ implementation ('com.squareup.retrofit2:retrofit:2.8.0'){
 implementation "com.squareup.okhttp3:okhttp:3.12.1"
 implementation "com.squareup.okio:okio:2.6.0"
 implementation 'com.google.code.gson:gson:2.8.6'
+// RXJava
 implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
 implementation 'io.reactivex.rxjava3:rxjava:3.0.0'
+// 反射
+implementation  "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
 ```
 ### Application初始化
@@ -52,7 +56,10 @@ public class BaseApplication extends Application {
 
 ### 使用方式
 ```
-private fun requestNet() {
+/**
+ * post请求
+ */
+private fun post() {
     RetrofitPresenter.post(activity, "post", Bean("100"),
         object : BeanCallback<String>() {
 
@@ -65,4 +72,36 @@ private fun requestNet() {
             }
         })
 }
+
+/**
+ * 同时请求两个接口
+ */
+private fun async() {
+    val service = RestCreator.getService()
+    GlobalScope.launch(Dispatchers.Main) {
+        Log.e("TAG", "async---1---")
+        val getResult = async(Dispatchers.IO) {
+            val get = service.get("get", mutableMapOf(), mutableMapOf(), "${this.hashCode()}")
+            val response = get.execute()
+            Log.e("TAG", "async---2---")
+            response.body()!!.string()
+        }
+        val postResult = async(Dispatchers.IO) {
+            val get =
+                service.postForm("post", mutableMapOf(), mutableMapOf(), "${this.hashCode()}")
+            val response = get.execute()
+            Log.e("TAG", "async---3---")
+            response.body()!!.string()
+        }
+        Log.e("TAG", "async---4---")
+
+        btn.text = getResult.await() + "\n" + postResult.await()
+
+        Log.e("TAG", "async---5---")
+    }
+    Log.e("TAG", "async---6---")
+    // 6 1 4 3 2 5
+    // 6 1 4 2 3 5
+}
+
 ```

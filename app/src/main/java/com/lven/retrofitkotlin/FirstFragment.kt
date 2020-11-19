@@ -1,6 +1,7 @@
 package com.lven.retrofitkotlin
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,9 +9,12 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.lven.retrofit.RetrofitPresenter
+import com.lven.retrofit.api.RestMethod
 import com.lven.retrofit.callback.BeanCallback
 import com.lven.retrofit.callback.ICallback
+import com.lven.retrofit.core.RestCreator
 import com.lven.retrofit.utils.createFile
+import kotlinx.coroutines.*
 import java.io.File
 
 /**
@@ -31,7 +35,7 @@ class FirstFragment : Fragment() {
         btn = view.findViewById(R.id.textview_first)
         view.findViewById<Button>(R.id.button_first).setOnClickListener {
             //findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
-            requestNet()
+            get()
         }
         var image = createFile("image.png")
         if (image.exists() && image.isFile && image.length() > 0) {
@@ -39,7 +43,7 @@ class FirstFragment : Fragment() {
         }
     }
 
-    private fun requestNet() {
+    private fun download() {
         val url =
             "https://img.car-house.cn/Upload/activity/20200424/J3GEiBhpAMfkesHCm7EWaQGwxDDwNbMc.png"
         RetrofitPresenter.download(activity, url, "image.png", object : ICallback {
@@ -62,5 +66,70 @@ class FirstFragment : Fragment() {
                     btn.text = result
                 }
             })
+
     }
+    fun get() {
+        RetrofitPresenter.get(activity, "https://www.baidu.com",
+            object : BeanCallback<String>() {
+                override fun onSucceed(result: String) {
+                    btn.text = result
+                }
+            })
+
+    }
+    /**
+     * 同时请求两个接口
+     */
+    private fun async() {
+        val service = RestCreator.getService()
+        GlobalScope.launch(Dispatchers.Main) {
+            Log.e("TAG", "async---1---")
+            val getResult = async(Dispatchers.IO) {
+                val get = service.get("get", mutableMapOf(), mutableMapOf(), "${this.hashCode()}")
+                val response = get.execute()
+                Log.e("TAG", "async---2---")
+                response.body()!!.string()
+            }
+            val postResult = async(Dispatchers.IO) {
+                val get =
+                    service.postForm("post", mutableMapOf(), mutableMapOf(), "${this.hashCode()}")
+                val response = get.execute()
+                Log.e("TAG", "async---3---")
+                response.body()!!.string()
+            }
+            Log.e("TAG", "async---4---")
+
+            btn.text = getResult.await() + "\n" + postResult.await()
+
+            Log.e("TAG", "async---5---")
+        }
+        Log.e("TAG", "async---6---")
+        // 6 1 4 3 2 5
+        // 6 1 4 2 3 5
+    }
+
+    private fun withContext() {
+        val service = RestCreator.getService()
+        GlobalScope.launch(Dispatchers.Main) {
+            Log.e("TAG", "withContext---1---")
+            val getResult = withContext(Dispatchers.IO) {
+                val get = service.get("get", mutableMapOf(), mutableMapOf(), "${this.hashCode()}")
+                val response = get.execute()
+                Log.e("TAG", "withContext---2---")
+                response.body()!!.string()
+            }
+            val postResult = withContext(Dispatchers.IO) {
+                val get =
+                    service.postForm("post", mutableMapOf(), mutableMapOf(), "${this.hashCode()}")
+                val response = get.execute()
+                Log.e("TAG", "withContext---3---")
+                response.body()!!.string()
+            }
+            Log.e("TAG", "withContext---4---")
+            btn.text = getResult + "\n" + postResult
+            Log.e("TAG", "withContext---5---")
+        }
+        Log.e("TAG", "withContext---6---")
+    }
+
 }
