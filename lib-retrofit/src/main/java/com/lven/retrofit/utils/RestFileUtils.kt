@@ -66,6 +66,8 @@ fun createFile(dir: File?, name: String): File {
     if (dir == null) {
         return File(RestConfig.context.filesDir, name)
     }
+    // 创建Dir目录
+    dir.mkdirs()
     return File(dir, name)
 }
 

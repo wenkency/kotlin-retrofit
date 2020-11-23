@@ -46,7 +46,6 @@ dependencies {
     implementation 'androidx.navigation:navigation-ui-ktx:2.3.0'
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation this.dependLibs.kotlinStdlib
-    implementation this.dependLibs.kotlinReflect
     implementation this.dependLibs.coreKtx
     implementation this.dependLibs.appcompat
     implementation (this.dependLibs.retrofit){
@@ -62,4 +61,5 @@ dependencies {
     implementation this.dependLibs.rxandroid
     implementation this.dependLibs.rxjava
     implementation project(path: ':lib-retrofit')
+    implementation 'com.github.wenkency:permission:1.3.0'
 }

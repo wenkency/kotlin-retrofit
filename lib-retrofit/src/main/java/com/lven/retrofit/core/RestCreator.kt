@@ -61,16 +61,16 @@ object RestCreator {
     /**
      * 用户可以根据URL创建请求
      */
-    fun getService(url: String): RestService {
-        return getRetrofit(url).create(RestService::class.java)
+    fun getService(url: String, client: OkHttpClient? = null): RestService {
+        return getRetrofit(url, client).create(RestService::class.java)
     }
 
-    private fun getRetrofit(url: String): Retrofit {
+    private fun getRetrofit(url: String, client: OkHttpClient? = null): Retrofit {
         var retrofit = map[url]
         if (retrofit == null) {
             retrofit = Retrofit.Builder()
                 .baseUrl(url)
-                .client(httpClient)
+                .client(client ?: httpClient)
                 .build()
             map[url] = retrofit
         }

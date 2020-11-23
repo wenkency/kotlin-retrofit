@@ -1,6 +1,6 @@
 # kotlin-retrofit
 用kotlin语言编写的retrofit网络请求封装库，
-支持get post put delete download upload 。
+支持get post(json) put delete download upload 。
 支持表单(postForm、putForm)请求。
 支持文件上传、下载支持进度回调。
 支持在Activity销毁时，自动取消网络。
@@ -28,9 +28,8 @@ implementation 'com.google.code.gson:gson:2.8.6'
 // RXJava
 implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
 implementation 'io.reactivex.rxjava3:rxjava:3.0.0'
-// 反射
+// 基于Kotlin
 implementation  "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
 ```
 ### Application初始化

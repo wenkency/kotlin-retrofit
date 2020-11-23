@@ -2,19 +2,23 @@ package com.lven.retrofit
 
 import android.app.Activity
 import androidx.collection.ArrayMap
+import com.lven.retrofit.api.FieldToJson
 import com.lven.retrofit.api.RestMethod
 import com.lven.retrofit.api.RestService
 import com.lven.retrofit.callback.ICallback
+import com.lven.retrofit.callback.RestCallback
+import com.lven.retrofit.core.RestClient
 import com.lven.retrofit.core.RestCreator
 import java.io.File
-import kotlin.reflect.KProperty1
-import kotlin.reflect.full.declaredMemberProperties
-import kotlin.reflect.jvm.isAccessible
+import java.lang.reflect.Field
+import java.util.*
 
+/**
+ * APP网络调用统一封装
+ */
 interface IRetrofit {
     /**
      * 执行方法
-     * 子类实现
      */
     fun enqueue(
         activity: Activity? = null,
@@ -24,7 +28,31 @@ interface IRetrofit {
         callback: ICallback,
         fileDir: File? = null,
         fileName: String = ""
-    )
+    ) {
+        // 请求的Client
+        val client = RestClient.RestfulBuilder()
+            .method(method)
+            .url(url)
+            .headers(headers)
+            .tag(activity.tag())
+            .params(params)
+            .build()
+
+        // 回调封装
+        val restCallback = RestCallback(
+            callback,
+            method == RestMethod.DOWNLOAD,
+            fileDir,
+            fileName,
+            client
+        )
+        client.request(callback, getService()).enqueue(restCallback)
+    }
+
+    /**
+     * 重写这个方法就可以更新BaseURL
+     */
+    fun getService(): RestService
 
 
     // == get method===================================================================================
@@ -218,13 +246,18 @@ interface IRetrofit {
         enqueue(activity, RestMethod.DOWNLOAD, url, headers, params, callback, fileDir, fileName)
     }
 
+    /**
+     * @param fileDir 下载文件放哪个目录
+     * @param fileName 文件名称
+     */
     fun download(
         activity: Activity? = null,
         url: String,
+        fileDir: File?,
         fileName: String,
         callback: ICallback
     ) {
-        download(activity, url, null, null, null, fileName, callback)
+        download(activity, url, null, null, fileDir, fileName, callback)
     }
 }
 
@@ -260,10 +293,33 @@ fun Array<out String>.arrayToMap(): MutableMap<String, Any> {
  */
 fun Any.anyToMap(): MutableMap<String, Any> {
     val map = ArrayMap<String, Any>()
-    for (property in this::class.declaredMemberProperties) {
-        property.isAccessible = true
-        val kp = property as KProperty1<Any, Any>
-        map[kp.name] = kp.get(this)
+    var allFields = getAllFields(this)
+    allFields.forEach { field ->
+        try {
+            val name = field.name
+            if (!name.contains("$") && name != "serialVersionUID") {
+                field.isAccessible = true
+                val value = field[this]
+                val fieldToJson: FieldToJson? = field.getAnnotation(FieldToJson::class.java)
+                if (fieldToJson != null) {
+                    map[name] = RestCreator.gson.toJson(value)
+                } else {
+                    map[name] = value
+                }
+            }
+        } catch (e: Throwable) {
+            e.printStackTrace()
+        }
     }
     return map
+}
+
+fun getAllFields(obj: Any): List<Field> {
+    var clazz: Class<*>? = obj.javaClass
+    val fieldList: MutableList<Field> = ArrayList()
+    while (clazz != null) {
+        fieldList.addAll(ArrayList(listOf(*clazz.declaredFields)))
+        clazz = clazz.superclass
+    }
+    return fieldList
 }

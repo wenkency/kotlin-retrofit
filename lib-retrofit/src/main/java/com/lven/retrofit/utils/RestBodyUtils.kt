@@ -15,6 +15,7 @@ import java.net.URLConnection
  * 创建请求体，针对下载回调请求
  */
 fun multipartBody(params: MutableMap<String, Any>, callback: ICallback): MultipartBody {
+    // 多文本二进制表单
     var builder = MultipartBody.Builder().setType(MultipartBody.FORM)
     for ((key, value) in params) {
         if (TextUtils.isEmpty(key) || value == null) {
@@ -47,7 +48,7 @@ fun requestBody(params: MutableMap<String, Any>): RequestBody {
     if (RestConfig.isBase64) {
         content = Base64.encode(content.toByteArray())
     }
-    return RequestBody.create(MediaType.get("application/json;charset=UTF-8"),content)
+    return RequestBody.create(MediaType.get("application/json;charset=UTF-8"), content)
     // return content.toRequestBody("application/json;charset=UTF-8".toMediaType())
 }
 
@@ -61,7 +62,7 @@ private fun fileToBody(
     onCallback: ICallback
 ) {
 //    val fileBody: RequestBody = file.asRequestBody(guessFileType(file.absolutePath))
-    val fileBody: RequestBody = RequestBody.create(guessFileType(file.absolutePath),file)
+    val fileBody: RequestBody = RequestBody.create(guessFileType(file.absolutePath), file)
     builder.addFormDataPart(key, file.name, RestMultipartBody(fileBody, onCallback))
 }
 

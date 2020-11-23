@@ -36,7 +36,6 @@ android {
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     compileOnly this.dependLibs.kotlinStdlib
-    compileOnly this.dependLibs.kotlinReflect
     compileOnly this.dependLibs.coreKtx
     compileOnly this.dependLibs.appcompat
     compileOnly (this.dependLibs.retrofit){

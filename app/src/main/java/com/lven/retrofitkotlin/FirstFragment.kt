@@ -1,6 +1,7 @@
 package com.lven.retrofitkotlin
 
 import android.os.Bundle
+import android.os.Environment
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -8,13 +9,20 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import cn.carhouse.permission.Permission
+import cn.carhouse.permission.XPermission
+import cn.carhouse.permission.callback.PermissionListenerAdapter
 import com.lven.retrofit.RetrofitPresenter
 import com.lven.retrofit.api.RestMethod
+import com.lven.retrofit.api.RestService
 import com.lven.retrofit.callback.BeanCallback
 import com.lven.retrofit.callback.ICallback
+import com.lven.retrofit.core.RestClient
 import com.lven.retrofit.core.RestCreator
 import com.lven.retrofit.utils.createFile
 import kotlinx.coroutines.*
+import retrofit2.Retrofit
+import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import java.io.File
 
 /**
@@ -35,7 +43,7 @@ class FirstFragment : Fragment() {
         btn = view.findViewById(R.id.textview_first)
         view.findViewById<Button>(R.id.button_first).setOnClickListener {
             //findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
-            get()
+            async()
         }
         var image = createFile("image.png")
         if (image.exists() && image.isFile && image.length() > 0) {
@@ -44,19 +52,26 @@ class FirstFragment : Fragment() {
     }
 
     private fun download() {
-        val url =
-            "https://img.car-house.cn/Upload/activity/20200424/J3GEiBhpAMfkesHCm7EWaQGwxDDwNbMc.png"
-        RetrofitPresenter.download(activity, url, "image.png", object : ICallback {
-            // 进度
-            override fun onProgress(progress: Float, current: Float, total: Float) {
-                btn.text = "$progress:$current:$total"
-            }
+        XPermission.with(activity)
+            .permissions(*Permission.STORAGE)
+            .request(object :PermissionListenerAdapter(){
+            override fun onSucceed() {
+                val url = "https://img.car-house.cn/Upload/activity/20200424/J3GEiBhpAMfkesHCm7EWaQGwxDDwNbMc.png"
+                RetrofitPresenter.download(activity, url, activity!!.getExternalFilesDir(Environment.DIRECTORY_DCIM), "image.png", object : ICallback {
+                    // 进度
+                    override fun onProgress(progress: Float, current: Float, total: Float) {
+                        btn.text = "$progress:$current:$total"
+                    }
 
-            // 成功
-            override fun onSuccess(file: File) {
+                    // 成功
+                    override fun onSuccess(file: File) {
+                        Log.e("TAG",file.absolutePath)
+                    }
 
+                })
             }
         })
+
     }
 
     fun post() {
@@ -68,6 +83,7 @@ class FirstFragment : Fragment() {
             })
 
     }
+
     fun get() {
         RetrofitPresenter.get(activity, "https://www.baidu.com",
             object : BeanCallback<String>() {
@@ -77,6 +93,7 @@ class FirstFragment : Fragment() {
             })
 
     }
+
     /**
      * 同时请求两个接口
      */
