@@ -104,3 +104,29 @@ private fun async() {
 }
 
 ```
+
+### 多个BaseUrl和自定义OkHttpClient配置
+```
+/**
+ * 普通网络请求,继承IRetrofit
+ */
+object RetrofitPresenter : IRetrofit {
+
+    /**
+     * 可以根据URL获取请求接口
+     */
+    override fun getService(): RestService {
+        return RestCreator.getService()
+    }
+}
+
+/**
+ * 自定义BaseURL和OkHttpClient
+ */
+class MultiUrlPresenter : IRetrofit {
+    override fun getService(): RestService {
+        return RestCreator.getService("http://www.baidu.com/", OkHttpClient());
+    }
+}
+
+```

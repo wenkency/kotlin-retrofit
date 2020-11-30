@@ -1,7 +1,6 @@
 package com.lven.retrofitkotlin
 
-import android.os.Bundle
-import android.os.Environment
+import android.os.*
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -13,17 +12,17 @@ import cn.carhouse.permission.Permission
 import cn.carhouse.permission.XPermission
 import cn.carhouse.permission.callback.PermissionListenerAdapter
 import com.lven.retrofit.RetrofitPresenter
-import com.lven.retrofit.api.RestMethod
-import com.lven.retrofit.api.RestService
 import com.lven.retrofit.callback.BeanCallback
 import com.lven.retrofit.callback.ICallback
-import com.lven.retrofit.core.RestClient
 import com.lven.retrofit.core.RestCreator
 import com.lven.retrofit.utils.createFile
 import kotlinx.coroutines.*
-import retrofit2.Retrofit
-import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
+import okhttp3.*
 import java.io.File
+import java.io.IOException
+import java.util.concurrent.BlockingQueue
+import java.util.concurrent.locks.Lock
+import java.util.concurrent.locks.ReentrantReadWriteLock
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
@@ -49,28 +48,59 @@ class FirstFragment : Fragment() {
         if (image.exists() && image.isFile && image.length() > 0) {
             btn.text = "${image.absolutePath}:${image.length()}"
         }
+
+    }
+
+    private fun test() {
+
+        Looper.myLooper() == Looper.getMainLooper()
+        val lock = ReentrantReadWriteLock()
+        lock.readLock().lock()
+        lock.writeLock().lock()
+
+        // 1. 创建一个OkhttpClient
+        val client = OkHttpClient()
+        // 2. 创建一个Call
+        client.newCall(Request.Builder().build())
+            // 3. 调用enqueue方法
+            .enqueue(object : Callback {
+                override fun onFailure(call: Call, e: IOException) {
+                }
+
+                override fun onResponse(call: Call, response: Response) {
+                }
+            })
+        val bean =Bean("")
+        
+
     }
 
     private fun download() {
         XPermission.with(activity)
             .permissions(*Permission.STORAGE)
-            .request(object :PermissionListenerAdapter(){
-            override fun onSucceed() {
-                val url = "https://img.car-house.cn/Upload/activity/20200424/J3GEiBhpAMfkesHCm7EWaQGwxDDwNbMc.png"
-                RetrofitPresenter.download(activity, url, activity!!.getExternalFilesDir(Environment.DIRECTORY_DCIM), "image.png", object : ICallback {
-                    // 进度
-                    override fun onProgress(progress: Float, current: Float, total: Float) {
-                        btn.text = "$progress:$current:$total"
-                    }
+            .request(object : PermissionListenerAdapter() {
+                override fun onSucceed() {
+                    val url =
+                        "https://img.car-house.cn/Upload/activity/20200424/J3GEiBhpAMfkesHCm7EWaQGwxDDwNbMc.png"
+                    RetrofitPresenter.download(
+                        activity,
+                        url,
+                        activity!!.getExternalFilesDir(Environment.DIRECTORY_DCIM),
+                        "image.png",
+                        object : ICallback {
+                            // 进度
+                            override fun onProgress(progress: Float, current: Float, total: Float) {
+                                btn.text = "$progress:$current:$total"
+                            }
 
-                    // 成功
-                    override fun onSuccess(file: File) {
-                        Log.e("TAG",file.absolutePath)
-                    }
+                            // 成功
+                            override fun onSuccess(file: File) {
+                                Log.e("TAG", file.absolutePath)
+                            }
 
-                })
-            }
-        })
+                        })
+                }
+            })
 
     }
 

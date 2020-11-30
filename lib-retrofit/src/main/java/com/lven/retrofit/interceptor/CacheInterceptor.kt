@@ -14,6 +14,7 @@ class CacheInterceptor(private val maxAge: Long = 0L) : Interceptor {
         if (maxAge > 0 && TextUtils.isEmpty(cacheControl)) {
             cacheControl = "public, max-age=$maxAge"
         }
+        // 这句话必须调用，不然就中断返回了
         val response = chain.proceed(request)
         return response.newBuilder()
             .header("Cache-Control", cacheControl)
