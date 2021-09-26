@@ -1,6 +1,7 @@
 package com.lven.retrofitkotlin
 
-import android.os.*
+import android.os.Bundle
+import android.os.Environment
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -8,26 +9,23 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import cn.carhouse.permission.Permission
-import cn.carhouse.permission.XPermission
-import cn.carhouse.permission.callback.PermissionListenerAdapter
+import com.boardour.permission.OnPermissionCallbackAdapter
+import com.boardour.permission.Permission
+import com.boardour.permission.XPermission
 import com.lven.retrofit.RetrofitPresenter
 import com.lven.retrofit.callback.BeanCallback
-import com.lven.retrofit.callback.ICallback
+import com.lven.retrofit.callback.CallbackAdapter
+import com.lven.retrofit.callback.IObjectCallback
+import com.lven.retrofit.core.RestClient
 import com.lven.retrofit.core.RestCreator
 import com.lven.retrofit.utils.createFile
 import kotlinx.coroutines.*
-import okhttp3.*
 import java.io.File
-import java.io.IOException
-import java.util.concurrent.BlockingQueue
-import java.util.concurrent.locks.Lock
-import java.util.concurrent.locks.ReentrantReadWriteLock
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
  */
-class FirstFragment : Fragment() {
+class FirstFragment : Fragment(), IObjectCallback {
     lateinit var btn: TextView
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,8 +39,9 @@ class FirstFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         btn = view.findViewById(R.id.textview_first)
         view.findViewById<Button>(R.id.button_first).setOnClickListener {
-            //findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
             async()
+            //postObj()
+            //download()
         }
         var image = createFile("image.png")
         if (image.exists() && image.isFile && image.length() > 0) {
@@ -51,77 +50,59 @@ class FirstFragment : Fragment() {
 
     }
 
-    private fun test() {
-
-        Looper.myLooper() == Looper.getMainLooper()
-        val lock = ReentrantReadWriteLock()
-        lock.readLock().lock()
-        lock.writeLock().lock()
-
-        // 1. 创建一个OkhttpClient
-        val client = OkHttpClient()
-        // 2. 创建一个Call
-        client.newCall(Request.Builder().build())
-            // 3. 调用enqueue方法
-            .enqueue(object : Callback {
-                override fun onFailure(call: Call, e: IOException) {
-                }
-
-                override fun onResponse(call: Call, response: Response) {
-                }
-            })
-        val bean =Bean("")
-        
-
-    }
-
     private fun download() {
         XPermission.with(activity)
-            .permissions(*Permission.STORAGE)
-            .request(object : PermissionListenerAdapter() {
-                override fun onSucceed() {
-                    val url =
-                        "https://img.car-house.cn/Upload/activity/20200424/J3GEiBhpAMfkesHCm7EWaQGwxDDwNbMc.png"
-                    RetrofitPresenter.download(
-                        activity,
-                        url,
-                        activity!!.getExternalFilesDir(Environment.DIRECTORY_DCIM),
-                        "image.png",
-                        object : ICallback {
-                            // 进度
-                            override fun onProgress(progress: Float, current: Float, total: Float) {
-                                btn.text = "$progress:$current:$total"
-                            }
-
-                            // 成功
-                            override fun onSuccess(file: File) {
-                                Log.e("TAG", file.absolutePath)
-                            }
-
-                        })
+            .permission(Permission.MANAGE_EXTERNAL_STORAGE)
+            .request(object : OnPermissionCallbackAdapter() {
+                override fun onGranted(permissions: MutableList<String>?, all: Boolean) {
+                    if (all) {
+                        doDownload()
+                    }
                 }
             })
-
     }
 
-    fun post() {
-        RetrofitPresenter.post(activity, "post", Bean("100"),
-            object : BeanCallback<String>() {
-                override fun onSucceed(result: String) {
-                    btn.text = result
+    private fun doDownload() {
+        val url =
+            "https://img.car-house.cn/Upload/activity/20200424/J3GEiBhpAMfkesHCm7EWaQGwxDDwNbMc.png"
+        RetrofitPresenter.download(
+            activity,
+            url,
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+            "image.png",
+            object : CallbackAdapter() {
+                // 进度
+                override fun onProgress(progress: Float, current: Float, total: Float) {
+                    btn.text = "$progress:$current:$total"
+                }
+
+                // 成功
+                override fun onSuccess(file: File) {
+                    Log.e("TAG", "onSuccess:" + file.absolutePath)
+                    btn.text = "onSuccess:" + file.absolutePath
                 }
             })
-
     }
 
-    fun get() {
-        RetrofitPresenter.get(activity, "https://www.baidu.com",
-            object : BeanCallback<String>() {
-                override fun onSucceed(result: String) {
-                    btn.text = result
-                }
-            })
+    private fun get() {
+        MainPresenter.get(activity, object : BeanCallback<String>() {
+            override fun onSucceed(result: String) {
+                btn.text = result
+            }
+        })
+    }
 
+    private fun post() {
+        MainPresenter.post(activity, object : BeanCallback<String>() {
+            override fun onSucceed(result: String) {
+                btn.text = result
+            }
+        })
+    }
+
+
+    private fun postObj() {
+        MainPresenter.postObj(activity, this, String::class.java)
     }
 
     /**
@@ -179,4 +160,22 @@ class FirstFragment : Fragment() {
         Log.e("TAG", "withContext---6---")
     }
 
+    // IObjectCallback ------
+    override fun onBefore(client: RestClient, clazz: Class<*>?) {
+        Log.e("TAG", "onBefore:")
+    }
+
+    override fun onAfter(clazz: Class<*>?) {
+        Log.e("TAG", "onAfter:")
+    }
+
+    override fun onSuccess(json: String, data: Any?, clazz: Class<*>?) {
+        Log.e("TAG", "onSuccess:")
+        btn.text = json
+    }
+
+    override fun onError(code: Int, message: String, clazz: Class<*>?) {
+        Log.e("TAG", "onError:$message")
+    }
+    // IObjectCallback ------
 }

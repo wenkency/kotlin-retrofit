@@ -1,9 +1,12 @@
 # kotlin-retrofit
-用kotlin语言编写的retrofit网络请求封装库，
-支持get post(json) put delete download upload 。
-支持表单(postForm、putForm)请求。
-支持文件上传、下载支持进度回调。
-支持在Activity销毁时，自动取消网络。
+
+1. 用kotlin语言编写的retrofit网络请求封装库.
+2. 支持get post(json) put delete download upload。
+3. 支持表单(postForm、putForm)请求。
+4. 支持文件上传、下载支持进度回调。
+5. 支持在Activity销毁时，自动取消网络。
+6. 支持一个页面多个请求，回调到一个地方。
+7. 支持自定义多个BaseURL，支持Kotlin协程，同时请求多个接口。
 
 ### 引入
 
@@ -14,25 +17,21 @@ allprojects {
         maven { url 'https://jitpack.io' }
     }
 }
-
-implementation 'com.github.wenkency:kotlin-retrofit:2.0.0'
-implementation ('com.squareup.retrofit2:retrofit:2.8.0'){
-    exclude group: 'com.android.support'
-    exclude group: 'com.squareup.okio'
-    exclude group: 'com.squareup.okhttp3'
-    exclude group: 'com.squareup.okhttp'
-}
-implementation "com.squareup.okhttp3:okhttp:3.12.1"
-implementation "com.squareup.okio:okio:2.6.0"
-implementation 'com.google.code.gson:gson:2.8.6'
-// RXJava
+// 依赖
+implementation 'com.github.wenkency:kotlin-retrofit:2.0.1'
+// retrofit + okhttp + rxjava3
+implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+implementation "com.squareup.okhttp3:okhttp:4.9.1"
+implementation "com.squareup.okio:okio:2.8.0"
 implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
 implementation 'io.reactivex.rxjava3:rxjava:3.0.0'
-// 基于Kotlin
-implementation  "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+// gson
+implementation 'com.google.code.gson:gson:2.8.8'
 
 ```
+
 ### Application初始化
+
 ```
 public class BaseApplication extends Application {
     @Override
@@ -54,7 +53,34 @@ public class BaseApplication extends Application {
 ```
 
 ### 使用方式
+
 ```
+/**
+ * Object回调
+ */
+fun postObj(activity: Activity?, callback: IObjectCallback, clazz: Class<*>) {
+    MultiUrlPresenter.post(
+        activity,
+        "post",
+        Bean("100"),
+        ObjectCallback(callback, clazz)
+    )
+}
+
+/**
+ * get请求
+ */
+fun get(activity: Activity?, callback: ICallback) {
+    RetrofitPresenter.get(activity, "https://www.baidu.com", callback)
+}
+/**
+ * post请求
+ */
+fun post(activity: Activity?, callback: ICallback) {
+    RetrofitPresenter.post(activity, "post", Bean("100"), callback)
+} 
+
+
 /**
  * post请求
  */
@@ -106,6 +132,7 @@ private fun async() {
 ```
 
 ### 多个BaseUrl和自定义OkHttpClient配置
+
 ```
 /**
  * 普通网络请求,继承IRetrofit

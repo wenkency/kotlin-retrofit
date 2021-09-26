@@ -10,8 +10,8 @@ abstract class BeanCallback<T> : ICallback {
     override fun onSuccess(result: String, client: RestClient) {
         // 直接返回String类型
         val type = this.getType()
-        val isString = type.toString() == "${String::class.java}"
-        if (isString) {
+        val isStr = type.toString() == "${String::class.java}"
+        if (isStr) {
             onSucceed(result as T)
         } else {
             onSucceed(RestCreator.gson.fromJson(result, type))

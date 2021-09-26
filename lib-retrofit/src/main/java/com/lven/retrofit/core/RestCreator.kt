@@ -8,7 +8,6 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import java.io.File
 import java.util.concurrent.TimeUnit
-import javax.net.ssl.HostnameVerifier
 
 /**
  * 请求接口的构造器
@@ -20,22 +19,26 @@ object RestCreator {
         Gson()
     }
     val httpClient: OkHttpClient by lazy {
-        var builder = OkHttpClient.Builder()
+        val builder = OkHttpClient.Builder()
             .connectTimeout(time, TimeUnit.SECONDS)
             .readTimeout(time, TimeUnit.SECONDS)
             .writeTimeout(time, TimeUnit.SECONDS)
-            .hostnameVerifier(HostnameVerifier { _, _ ->
-                true
-            })
+            .hostnameVerifier(RestConfig.hostnameVerifier)
+        // SSL
+        try {
+            builder.sslSocketFactory(RestConfig.sslSocketFactory, RestConfig.trustManager)
+        } catch (e: Throwable) {
+            e.printStackTrace()
+        }
         // 添加自定义拦截器
-        var interceptors = RestConfig.interceptors
+        val interceptors = RestConfig.interceptors
         if (interceptors.isNotEmpty()) {
             for (interceptor in interceptors) {
                 builder.addInterceptor(interceptor)
             }
         }
         // 添加网络请求后的自定义拦截器
-        var netInterceptors = RestConfig.netInterceptors
+        val netInterceptors = RestConfig.netInterceptors
         if (netInterceptors.isNotEmpty()) {
             val file: File = RestConfig.context.cacheDir
             if (!file.exists()) {

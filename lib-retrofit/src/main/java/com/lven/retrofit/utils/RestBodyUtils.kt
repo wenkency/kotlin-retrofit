@@ -6,8 +6,10 @@ import com.lven.retrofit.config.RestConfig
 import com.lven.retrofit.core.RestCreator
 import com.lven.retrofit.core.RestMultipartBody
 import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
 import java.net.URLConnection
 
@@ -48,8 +50,8 @@ fun requestBody(params: MutableMap<String, Any>): RequestBody {
     if (RestConfig.isBase64) {
         content = Base64.encode(content.toByteArray())
     }
-    return RequestBody.create(MediaType.get("application/json;charset=UTF-8"), content)
-    // return content.toRequestBody("application/json;charset=UTF-8".toMediaType())
+    // return RequestBody.create(MediaType.get("application/json;charset=UTF-8"), content)
+    return content.toRequestBody("application/json;charset=UTF-8".toMediaType())
 }
 
 /**
@@ -74,5 +76,5 @@ private fun guessFileType(path: String): MediaType {
     if (contentType == null) {
         contentType = "application/octet-stream"
     }
-    return MediaType.get(contentType)
+    return contentType.toMediaType()
 }

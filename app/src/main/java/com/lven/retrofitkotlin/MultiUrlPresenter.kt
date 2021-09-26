@@ -8,8 +8,8 @@ import okhttp3.OkHttpClient
 /**
  * 自定义URL和OkHttpClient
  */
-class MultiUrlPresenter : IRetrofit {
+object MultiUrlPresenter : IRetrofit {
     override fun getService(): RestService {
-        return RestCreator.getService("http://www.baidu.com/", OkHttpClient());
+        return RestCreator.getService("http://httpbin.org", OkHttpClient())
     }
 }

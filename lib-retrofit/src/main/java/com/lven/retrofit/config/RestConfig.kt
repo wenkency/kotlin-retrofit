@@ -4,7 +4,11 @@ import android.app.Application
 import android.content.Context
 import android.text.TextUtils
 import androidx.collection.ArrayMap
+import com.lven.retrofit.utils.RestSSLUtils
 import okhttp3.Interceptor
+import javax.net.ssl.HostnameVerifier
+import javax.net.ssl.SSLSocketFactory
+import javax.net.ssl.X509TrustManager
 
 /**
  * 网络请求配置
@@ -50,15 +54,32 @@ object RestConfig {
      */
     val commParams: MutableMap<String, Any> = ArrayMap()
 
+    // 默认主机验证
+    var hostnameVerifier: HostnameVerifier = HostnameVerifier { _, _ -> true }
+
+    // SSL
+    var sslSocketFactory: SSLSocketFactory = RestSSLUtils.initSSLSocketFactory()
+    var trustManager: X509TrustManager = RestSSLUtils.initTrustManager()
+
 
     fun baseUrl(baseUrl: String) = apply {
         this.baseUrl = baseUrl
     }
 
-
     fun debugUrl(debugUrl: String) = apply {
         this.debugUrl = debugUrl
     }
+
+    fun hostnameVerifier(hostnameVerifier: HostnameVerifier) = apply {
+        this.hostnameVerifier = hostnameVerifier;
+    }
+
+    fun sslSocketFactory(sslSocketFactory: SSLSocketFactory, trustManager: X509TrustManager) =
+        apply {
+            this.sslSocketFactory = sslSocketFactory
+            this.trustManager = trustManager
+
+        }
 
     fun debug(debug: Boolean) = apply {
         this.isDebug = debug
@@ -68,19 +89,19 @@ object RestConfig {
         this.isBase64 = isBase64
     }
 
-    fun addInterceptor(interceptor: Interceptor) = apply {
+    fun interceptor(interceptor: Interceptor) = apply {
         interceptors.add(interceptor)
     }
 
-    fun addNetInterceptor(interceptor: Interceptor) = apply {
+    fun netInterceptor(interceptor: Interceptor) = apply {
         netInterceptors.add(interceptor)
     }
 
-    fun setCommHeaders(commHeaders: Map<String, String>) = apply {
+    fun commHeaders(commHeaders: Map<String, String>) = apply {
         this.commHeaders += commHeaders
     }
 
-    fun setCommParams(commParams: Map<String, Any>) = apply {
+    fun commParams(commParams: Map<String, Any>) = apply {
         this.commParams += commParams
     }
 
