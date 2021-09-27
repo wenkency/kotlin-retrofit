@@ -19,10 +19,10 @@ public class RestUtils {
      * 请求共用方法
      */
     public static Map<String, Object> getParams(Object obj) {
-        if (obj == null) {
-            return null;
-        }
         Map<String, Object> map = new ArrayMap<>();
+        if (obj == null) {
+            return map;
+        }
         Field[] fields = obj.getClass().getDeclaredFields();
         for (Field field : fields) {
             try {
