@@ -61,4 +61,7 @@ dependencies {
 
     // 权限
     implementation files("${projectDir.getAbsolutePath()}/libs/permisson.aar")
+
+    // debugImplementation because LeakCanary should only run in debug builds.
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
 }

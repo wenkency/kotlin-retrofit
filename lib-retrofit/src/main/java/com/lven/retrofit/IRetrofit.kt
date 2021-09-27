@@ -66,6 +66,15 @@ interface IRetrofit {
         enqueue(activity, RestMethod.GET, url, headers, params, callback)
     }
 
+    fun get(
+        activity: Activity? = null,
+        url: String,
+        params: MutableMap<String, Any>,
+        callback: ICallback
+    ) {
+        get(activity, url, null, params, callback)
+    }
+
     fun get(activity: Activity? = null, url: String, callback: ICallback) {
         get(activity, url, null, null, callback)
     }
@@ -89,6 +98,15 @@ interface IRetrofit {
         enqueue(activity, RestMethod.POST, url, headers, params, callback)
     }
 
+    fun post(
+        activity: Activity? = null,
+        url: String,
+        params: MutableMap<String, Any>,
+        callback: ICallback
+    ) {
+        post(activity, url, null, params, callback)
+    }
+
     fun post(activity: Activity? = null, url: String, callback: ICallback) {
         post(activity, url, null, null, callback)
     }
@@ -110,6 +128,15 @@ interface IRetrofit {
         callback: ICallback
     ) {
         enqueue(activity, RestMethod.POST_FORM, url, headers, params, callback)
+    }
+
+    fun postForm(
+        activity: Activity? = null,
+        url: String,
+        params: MutableMap<String, Any>,
+        callback: ICallback
+    ) {
+        postForm(activity, url, null, params, callback)
     }
 
     fun postForm(activity: Activity? = null, url: String, callback: ICallback) {
@@ -140,6 +167,15 @@ interface IRetrofit {
         enqueue(activity, RestMethod.PUT, url, headers, params, callback)
     }
 
+    fun put(
+        activity: Activity? = null,
+        url: String,
+        params: MutableMap<String, Any>,
+        callback: ICallback
+    ) {
+        put(activity, url, null, params, callback)
+    }
+
     fun put(activity: Activity? = null, url: String, callback: ICallback) {
         put(activity, url, null, null, callback)
     }
@@ -166,6 +202,15 @@ interface IRetrofit {
         callback: ICallback
     ) {
         enqueue(activity, RestMethod.PUT_FORM, url, headers, params, callback)
+    }
+
+    fun putForm(
+        activity: Activity? = null,
+        url: String,
+        params: MutableMap<String, Any>,
+        callback: ICallback
+    ) {
+        putForm(activity, url, null, params, callback)
     }
 
     fun putForm(activity: Activity? = null, url: String, callback: ICallback) {
@@ -195,7 +240,14 @@ interface IRetrofit {
     ) {
         enqueue(activity, RestMethod.DELETE, url, headers, params, callback)
     }
-
+    fun delete(
+        activity: Activity? = null,
+        url: String,
+        params: MutableMap<String, Any>,
+        callback: ICallback
+    ) {
+        delete(activity, url, null, params, callback)
+    }
     fun delete(activity: Activity? = null, url: String, callback: ICallback) {
         delete(activity, url, null, null, callback)
     }

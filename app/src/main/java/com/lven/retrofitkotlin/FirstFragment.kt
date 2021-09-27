@@ -39,8 +39,8 @@ class FirstFragment : Fragment(), IObjectCallback {
         super.onViewCreated(view, savedInstanceState)
         btn = view.findViewById(R.id.textview_first)
         view.findViewById<Button>(R.id.button_first).setOnClickListener {
-            async()
-            //postObj()
+            //async()
+            postObj()
             //download()
         }
         var image = createFile("image.png")
