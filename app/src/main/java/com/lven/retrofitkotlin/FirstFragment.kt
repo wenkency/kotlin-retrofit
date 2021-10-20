@@ -169,12 +169,12 @@ class FirstFragment : Fragment(), IObjectCallback {
         Log.e("TAG", "onAfter:")
     }
 
-    override fun onSuccess(json: String, data: Any?, clazz: Class<*>?) {
+    override fun onSuccess(json: String, data: Any?, clazz: Class<*>?, requestCode: Int) {
         Log.e("TAG", "onSuccess:")
         btn.text = json
     }
 
-    override fun onError(code: Int, message: String, clazz: Class<*>?) {
+    override fun onError(code: Int, message: String, clazz: Class<*>?, requestCode: Int) {
         Log.e("TAG", "onError:$message")
     }
     // IObjectCallback ------

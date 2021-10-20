@@ -9,7 +9,8 @@ import java.io.File
  */
 class ObjectCallback(
     private val callback: IObjectCallback? = null,
-    private val clazz: Class<*>? = null
+    private val clazz: Class<*>? = null,
+    private var requestCode: Int = -1
 ) : ICallback {
 
     override fun onSuccess(response: String, client: RestClient) {
@@ -25,15 +26,15 @@ class ObjectCallback(
                     gson.fromJson<Any>(response, clazz)
                 }
             }
-            callback.onSuccess(response, data, clazz)
+            callback.onSuccess(response, data, clazz,requestCode)
         } catch (e: Throwable) {
             // 解析失败，原封不动返回
-            callback.onSuccess(response, response, clazz)
+            callback.onSuccess(response, response, clazz,requestCode)
         }
     }
 
     override fun onError(code: Int, message: String, client: RestClient) {
-        callback?.onError(code, message, clazz)
+        callback?.onError(code, message, clazz,requestCode)
     }
 
     override fun onBefore(client: RestClient) {

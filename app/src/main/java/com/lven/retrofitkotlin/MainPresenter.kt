@@ -18,7 +18,7 @@ object MainPresenter {
             activity,
             "post",
             map,
-            ObjectCallback(callback, clazz)
+            ObjectCallback(callback, clazz,1)
         )
     }
 
