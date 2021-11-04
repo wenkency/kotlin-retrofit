@@ -36,6 +36,8 @@ android {
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     compileOnly 'androidx.core:core-ktx:1.6.0'
+    // kotlin
+    compileOnly "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     compileOnly 'androidx.appcompat:appcompat:1.3.1'
     compileOnly 'com.squareup.retrofit2:retrofit:2.9.0'
     compileOnly "com.squareup.okhttp3:okhttp:4.9.2"
