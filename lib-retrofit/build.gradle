@@ -2,7 +2,7 @@ plugins {
     id 'com.android.library'
     id 'kotlin-android'
     // 远程仓库
-    id 'maven-publish'
+    id 'com.github.dcendents.android-maven'
 }
 
 group = 'com.github.wenkency'
