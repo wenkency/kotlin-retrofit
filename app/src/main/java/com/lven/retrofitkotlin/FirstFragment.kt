@@ -161,11 +161,11 @@ class FirstFragment : Fragment(), IObjectCallback {
     }
 
     // IObjectCallback ------
-    override fun onBefore(client: RestClient, clazz: Class<*>?) {
+    override fun onBefore(client: RestClient, clazz: Class<*>?, requestCode: Int) {
         Log.e("TAG", "onBefore:")
     }
 
-    override fun onAfter(clazz: Class<*>?) {
+    override fun onAfter(clazz: Class<*>?, requestCode: Int) {
         Log.e("TAG", "onAfter:")
     }
 

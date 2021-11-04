@@ -2,7 +2,7 @@ plugins {
     id 'com.android.library'
     id 'kotlin-android'
     // 远程仓库
-    id 'com.github.dcendents.android-maven'
+    id 'maven-publish'
 }
 
 group = 'com.github.wenkency'
@@ -15,7 +15,7 @@ android {
         minSdkVersion this.app.minSdkVersion
         targetSdkVersion this.app.targetSdkVersion
         versionCode 1
-        versionName "1.0"
+        versionName "2.2.0"
     }
 
     buildTypes {

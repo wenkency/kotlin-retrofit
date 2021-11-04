@@ -26,23 +26,23 @@ class ObjectCallback(
                     gson.fromJson<Any>(response, clazz)
                 }
             }
-            callback.onSuccess(response, data, clazz,requestCode)
+            callback.onSuccess(response, data, clazz, requestCode)
         } catch (e: Throwable) {
             // 解析失败，原封不动返回
-            callback.onSuccess(response, response, clazz,requestCode)
+            callback.onSuccess(response, response, clazz, requestCode)
         }
     }
 
     override fun onError(code: Int, message: String, client: RestClient) {
-        callback?.onError(code, message, clazz,requestCode)
+        callback?.onError(code, message, clazz, requestCode)
     }
 
     override fun onBefore(client: RestClient) {
-        callback?.onBefore(client, clazz)
+        callback?.onBefore(client, clazz, requestCode)
     }
 
     override fun onAfter() {
-        callback?.onAfter(clazz)
+        callback?.onAfter(clazz, requestCode)
     }
 
     override fun onProgress(progress: Float, current: Float, total: Float) {

@@ -4,9 +4,9 @@ import com.lven.retrofit.core.RestClient
 
 interface IObjectCallback : ICallback {
 
-    fun onBefore(client: RestClient, clazz: Class<*>?)
+    fun onBefore(client: RestClient, clazz: Class<*>?, requestCode: Int = -1)
 
-    fun onAfter(clazz: Class<*>?)
+    fun onAfter(clazz: Class<*>?, requestCode: Int = -1)
 
     /**
      * 请求成功回调事件处理

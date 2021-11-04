@@ -1,13 +1,14 @@
 // 引入配置
 apply from: 'config.gradle'
 buildscript {
-    ext.kotlin_version = "1.5.21"
+    ext.kotlin_version = "1.5.31"
     repositories {
+        mavenCentral()
         google()
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.2.2'
+        classpath 'com.android.tools.build:gradle:7.0.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1' // Add this line
     }
@@ -15,6 +16,7 @@ buildscript {
 
 allprojects {
     repositories {
+        mavenCentral()
         google()
         jcenter()
         maven { url "https://oss.jfrog.org/libs-snapshot" }
