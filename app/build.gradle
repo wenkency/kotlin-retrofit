@@ -48,6 +48,7 @@ dependencies {
     // 解析Bean用到
     implementation 'com.google.code.gson:gson:2.8.8'
 
+
     implementation project(path: ':lib-retrofit')
 
     // 权限

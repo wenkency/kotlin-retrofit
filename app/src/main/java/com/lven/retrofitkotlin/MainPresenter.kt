@@ -11,14 +11,15 @@ object MainPresenter {
     /**
      * Object回调
      */
-    fun postObj(activity: Activity?, callback: IObjectCallback, clazz: Class<*>) {
+    fun postObj(activity: Activity?, callback: IObjectCallback,
+                clazz: Class<*>,requestCode: Int = 1) {
         val map = RestUtils.getParams()
         map["id"] = 100
         MultiUrlPresenter.post(
             activity,
             "post",
             map,
-            ObjectCallback(callback, clazz,1)
+            ObjectCallback(callback, clazz,requestCode)
         )
     }
 

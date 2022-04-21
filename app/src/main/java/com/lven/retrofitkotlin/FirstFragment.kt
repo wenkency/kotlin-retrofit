@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.boardour.permission.OnPermissionCallbackAdapter
 import com.boardour.permission.Permission
@@ -68,7 +69,7 @@ class FirstFragment : Fragment(), IObjectCallback {
         RetrofitPresenter.download(
             activity,
             url,
-            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+            activity?.getExternalFilesDir(Environment.DIRECTORY_PICTURES),
             "image.png",
             object : CallbackAdapter() {
                 // 进度
@@ -171,11 +172,15 @@ class FirstFragment : Fragment(), IObjectCallback {
 
     override fun onSuccess(json: String, data: Any?, clazz: Class<*>?, requestCode: Int) {
         Log.e("TAG", "onSuccess:")
+        if (clazz == String::class.java) {
+            Log.e("TAG", "onSuccess:true")
+        }
         btn.text = json
     }
 
     override fun onError(code: Int, message: String, clazz: Class<*>?, requestCode: Int) {
         Log.e("TAG", "onError:$message")
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
     // IObjectCallback ------
 }
