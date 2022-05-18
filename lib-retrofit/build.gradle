@@ -4,7 +4,8 @@ plugins {
     // 远程仓库
     id 'maven-publish'
 }
-
+group = 'com.github.wenkency'
+version = '3.0.0'
 afterEvaluate {
     publishing {
         publications {
