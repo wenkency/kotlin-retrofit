@@ -10,8 +10,7 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.hjq.permissions.Permission
-import com.hjq.permissions.XXPermissions
+import com.lven.retrofitkotlin.presenter.MainPresenter
 import com.retrofit.RetrofitPresenter
 import com.retrofit.callback.BeanCallback
 import com.retrofit.callback.CallbackAdapter
@@ -19,7 +18,6 @@ import com.retrofit.callback.IObjectCallback
 import com.retrofit.core.RestClient
 import com.retrofit.core.RestCreator
 import com.retrofit.utils.createFile
-import com.lven.retrofitkotlin.presenter.MainPresenter
 import kotlinx.coroutines.*
 import java.io.File
 
@@ -52,12 +50,12 @@ class FirstFragment : Fragment(), IObjectCallback {
     }
 
     private fun download() {
-        XXPermissions.with(activity).permission(Permission.MANAGE_EXTERNAL_STORAGE)
+        /*XXPermissions.with(activity).permission(Permission.MANAGE_EXTERNAL_STORAGE)
             .request { _, all ->
                 if (all) {
                     doDownload()
                 }
-            }
+            }*/
     }
 
     private fun doDownload() {

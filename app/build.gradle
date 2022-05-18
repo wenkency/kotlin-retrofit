@@ -59,7 +59,7 @@ dependencies {
     implementation project(path: ':lib-retrofit')
 
     // 权限请求框架：https://github.com/getActivity/XXPermissions
-    implementation 'com.github.getActivity:XXPermissions:13.6'
+    // implementation 'com.github.getActivity:XXPermissions:13.6'
 
     // debugImplementation because LeakCanary should only run in debug builds.
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
