@@ -5,7 +5,7 @@ plugins {
     id 'maven-publish'
 }
 group = 'com.github.wenkency'
-version = '3.1.1'
+version = '3.1.2'
 
 
 android {
@@ -14,8 +14,8 @@ android {
     defaultConfig {
         minSdkVersion this.app.minSdkVersion
         targetSdkVersion this.app.targetSdkVersion
-        versionCode 311
-        versionName "3.1.1"
+        versionCode 312
+        versionName "3.1.2"
     }
 
     buildTypes {
@@ -35,6 +35,7 @@ android {
 
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
+    compileOnly "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compileOnly 'androidx.core:core-ktx:1.7.0'
     compileOnly 'androidx.appcompat:appcompat:1.4.1'
     // =======网络请求库=========
@@ -55,7 +56,7 @@ afterEvaluate {
                 from components.release
                 groupId = 'com.github.wenkency'
                 artifactId = 'kotlin-retrofit'
-                version = '3.1.1'
+                version = '3.1.2'
             }
         }
     }
