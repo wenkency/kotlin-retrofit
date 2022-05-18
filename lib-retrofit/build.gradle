@@ -5,20 +5,8 @@ plugins {
     id 'maven-publish'
 }
 group = 'com.github.wenkency'
-version = '3.1.0'
-afterEvaluate {
-    publishing {
-        publications {
-            // Creates a Maven publication called "release".
-            release(MavenPublication) {
-                from components.release
-                groupId = 'com.github.wenkency'
-                artifactId = 'android-kotlin-retrofit'
-                version = '3.1.0'
-            }
-        }
-    }
-}
+version = '3.1.1'
+
 
 android {
     compileSdkVersion this.app.compileSdkVersion
@@ -26,8 +14,8 @@ android {
     defaultConfig {
         minSdkVersion this.app.minSdkVersion
         targetSdkVersion this.app.targetSdkVersion
-        versionCode 310
-        versionName "3.1.0"
+        versionCode 311
+        versionName "3.1.1"
     }
 
     buildTypes {
@@ -57,4 +45,18 @@ dependencies {
     compileOnly 'io.reactivex.rxjava3:rxjava:3.0.0'
     compileOnly 'com.google.code.gson:gson:2.8.9'
     // =======网络请求库=========
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            // Creates a Maven publication called "release".
+            release(MavenPublication) {
+                from components.release
+                groupId = 'com.github.wenkency'
+                artifactId = 'kotlin-retrofit'
+                version = '3.1.1'
+            }
+        }
+    }
 }
