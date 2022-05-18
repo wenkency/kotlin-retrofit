@@ -7,6 +7,7 @@
 5. 支持在Activity销毁时，自动取消网络。
 6. 支持一个页面多个请求，回调到一个地方。
 7. 支持自定义多个BaseURL，支持Kotlin协程，同时请求多个接口。
+8. 支持MVVM ViewModel的写法，可以自动取消网络请求。
 
 ### 引入
 
@@ -18,7 +19,7 @@ allprojects {
     }
 }
 // 依赖
-implementation 'com.github.wenkency:kotlin-retrofit:2.5.0'
+implementation 'com.github.wenkency:kotlin-retrofit:2.6.0'
 // retrofit + okhttp + rxjava3
 implementation 'com.squareup.retrofit2:retrofit:2.9.0'
 implementation "com.squareup.okhttp3:okhttp:4.9.2"
@@ -26,20 +27,34 @@ implementation "com.squareup.okio:okio:2.8.0"
 implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
 implementation 'io.reactivex.rxjava3:rxjava:3.0.0'
 // gson
-implementation 'com.google.code.gson:gson:2.8.8'
+implementation 'com.google.code.gson:gson:2.8.9'
 
+```
+
+### 混淆
+
+```
+-keep class *{
+@com.retrofit.api.FieldToJson <fields>;
+}
 ```
 
 ### Application初始化
 
 ```
+// 清单加上这个
+<application
+       ...
+        android:usesCleartextTraffic="true">
+       ...
+</application>
+
 public class BaseApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
         // 1. 初始化
-        RestConfig.getInstance()
-                .baseUrl("http://httpbin.org/")
+        RestConfig.baseUrl("http://httpbin.org/")
                 .debugUrl("http://httpbin.org/")
                 .debug(true)
                 .setCommHeaders(null) // 添加公共请求头，根据项目自己添加
@@ -156,4 +171,64 @@ class MultiUrlPresenter : IRetrofit {
     }
 }
 
+```
+
+### Mvvm测试
+
+* Mvvm Activity
+
+```
+/**
+ * MVVM写法，测试网络请求
+ */
+class BindingActivity : AppCompatActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        var binding: ActivityBindingBinding =
+            DataBindingUtil.setContentView(this, R.layout.activity_binding)
+        binding.vm = getViewModel(BindingViewModel::class.java)
+        // LiveData需要感知生命周期
+        binding.lifecycleOwner = this
+    }
+
+    /**
+     * 创建ViewModel
+     */
+    fun <T : ViewModel> getViewModel(clazz: Class<T>): T {
+        return ViewModelProvider(this, ViewModelProvider.NewInstanceFactory()).get(clazz)
+    }
+}
+```
+
+* ViewModel
+
+```
+/**
+ * 销毁自动取消网络请求
+ */
+class BindingViewModel : NetViewModel() {
+
+    // 绑定TextView
+    var name = MutableLiveData("")
+
+    // 请求网络
+    fun requestNet() {
+        // 这个要
+        RetrofitPresenter.post(this, "post", Bean("100"),
+            object : BeanCallback<String>() {
+                override fun onSucceed(t: String) {
+                    name.value = t
+                }
+            })
+    }
+
+    /**
+     * 销毁自动取消网络请求
+     */
+    override fun onCleared() {
+        // 取消网络请求
+        CancelNetUtils.cancel(this)
+    }
+}
 ```

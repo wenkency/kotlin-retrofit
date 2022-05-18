@@ -10,16 +10,16 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.boardour.permission.OnPermissionCallbackAdapter
-import com.boardour.permission.Permission
-import com.boardour.permission.XPermission
-import com.lven.retrofit.RetrofitPresenter
-import com.lven.retrofit.callback.BeanCallback
-import com.lven.retrofit.callback.CallbackAdapter
-import com.lven.retrofit.callback.IObjectCallback
-import com.lven.retrofit.core.RestClient
-import com.lven.retrofit.core.RestCreator
-import com.lven.retrofit.utils.createFile
+import com.hjq.permissions.Permission
+import com.hjq.permissions.XXPermissions
+import com.retrofit.RetrofitPresenter
+import com.retrofit.callback.BeanCallback
+import com.retrofit.callback.CallbackAdapter
+import com.retrofit.callback.IObjectCallback
+import com.retrofit.core.RestClient
+import com.retrofit.core.RestCreator
+import com.retrofit.utils.createFile
+import com.lven.retrofitkotlin.presenter.MainPresenter
 import kotlinx.coroutines.*
 import java.io.File
 
@@ -40,8 +40,8 @@ class FirstFragment : Fragment(), IObjectCallback {
         super.onViewCreated(view, savedInstanceState)
         btn = view.findViewById(R.id.textview_first)
         view.findViewById<Button>(R.id.button_first).setOnClickListener {
-            //async()
-            postObj()
+            withContext()
+            //postObj()
             //download()
         }
         var image = createFile("image.png")
@@ -52,15 +52,12 @@ class FirstFragment : Fragment(), IObjectCallback {
     }
 
     private fun download() {
-        XPermission.with(activity)
-            .permission(Permission.MANAGE_EXTERNAL_STORAGE)
-            .request(object : OnPermissionCallbackAdapter() {
-                override fun onGranted(permissions: MutableList<String>?, all: Boolean) {
-                    if (all) {
-                        doDownload()
-                    }
+        XXPermissions.with(activity).permission(Permission.MANAGE_EXTERNAL_STORAGE)
+            .request { _, all ->
+                if (all) {
+                    doDownload()
                 }
-            })
+            }
     }
 
     private fun doDownload() {
@@ -159,6 +156,8 @@ class FirstFragment : Fragment(), IObjectCallback {
             Log.e("TAG", "withContext---5---")
         }
         Log.e("TAG", "withContext---6---")
+        // 总是
+        // 6 1 2 3 4 5
     }
 
     // IObjectCallback ------

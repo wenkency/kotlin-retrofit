@@ -2,20 +2,31 @@ plugins {
     id 'com.android.library'
     id 'kotlin-android'
     // 远程仓库
-    id 'com.github.dcendents.android-maven'
+    id 'maven-publish'
 }
 
-group = 'com.github.wenkency'
+afterEvaluate {
+    publishing {
+        publications {
+            // Creates a Maven publication called "release".
+            release(MavenPublication) {
+                from components.release
+                groupId = 'com.github.wenkency'
+                artifactId = 'android-kotlin-retrofit'
+                version = '3.0.0'
+            }
+        }
+    }
+}
 
 android {
     compileSdkVersion this.app.compileSdkVersion
-    buildToolsVersion this.app.buildToolsVersion
 
     defaultConfig {
         minSdkVersion this.app.minSdkVersion
         targetSdkVersion this.app.targetSdkVersion
-        versionCode 1
-        versionName "2.5.0"
+        versionCode 300
+        versionName "3.0.0"
     }
 
     buildTypes {
@@ -35,14 +46,14 @@ android {
 
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
-    compileOnly 'androidx.core:core-ktx:1.6.0'
-    // kotlin
-    compileOnly "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    compileOnly 'androidx.appcompat:appcompat:1.3.1'
+    compileOnly 'androidx.core:core-ktx:1.7.0'
+    compileOnly 'androidx.appcompat:appcompat:1.4.1'
+    // =======网络请求库=========
     compileOnly 'com.squareup.retrofit2:retrofit:2.9.0'
     compileOnly "com.squareup.okhttp3:okhttp:4.9.2"
     compileOnly "com.squareup.okio:okio:3.0.0-alpha.10"
     compileOnly 'io.reactivex.rxjava3:rxandroid:3.0.0'
     compileOnly 'io.reactivex.rxjava3:rxjava:3.0.0'
-    compileOnly 'com.google.code.gson:gson:2.8.8'
+    compileOnly 'com.google.code.gson:gson:2.8.9'
+    // =======网络请求库=========
 }

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--数据源-->
+    <data>
+
+        <variable
+            name="vm"
+            type="com.lven.retrofitkotlin.BindingViewModel" />
+    </data>
+
+    <!--布局中的视图组件-->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="15dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@{vm.name}"
+                android:textColor="@color/colorPrimary"
+                android:textSize="16dp" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="15dp"
+                android:onClick="@{(view)->vm.click(view)}"
+                android:text="到Main" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="15dp"
+                android:onClick="@{()->vm.requestNet()}"
+                android:text="请求网络" />
+        </LinearLayout>
+    </ScrollView>
+</layout>
