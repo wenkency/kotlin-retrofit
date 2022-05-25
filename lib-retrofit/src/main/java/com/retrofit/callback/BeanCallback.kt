@@ -12,12 +12,12 @@ abstract class BeanCallback<T> : ICallback {
         val type = this.getType()
         val isStr = type.toString() == "${String::class.java}"
         if (isStr) {
-            onSucceed(result as T)
+            onSucceed(result as T, client)
         } else {
-            onSucceed(RestCreator.gson.fromJson(result, type))
+            onSucceed(RestCreator.gson.fromJson(result, type), client)
         }
     }
 
-    abstract fun onSucceed(t: T)
+    abstract fun onSucceed(data: T, client: RestClient)
 }
 

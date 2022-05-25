@@ -3,11 +3,13 @@ package com.lven.retrofitkotlin
 import android.content.Intent
 import android.view.View
 import androidx.lifecycle.MutableLiveData
+import com.lven.retrofitkotlin.bean.LoginData
+import com.lven.retrofitkotlin.bean.LoginResponse
+import com.lven.retrofitkotlin.viewmodel.NetViewModel
 import com.retrofit.RetrofitPresenter
 import com.retrofit.callback.BeanCallback
 import com.retrofit.config.CancelNetUtils
-import com.lven.retrofitkotlin.bean.Bean
-import com.lven.retrofitkotlin.viewmodel.NetViewModel
+import com.retrofit.core.RestClient
 
 /**
  * 销毁自动取消网络请求
@@ -29,10 +31,11 @@ class BindingViewModel : NetViewModel() {
     // 请求网络
     fun requestNet() {
         // 这个要
-        RetrofitPresenter.post(this, "post", Bean("100"),
-            object : BeanCallback<String>() {
-                override fun onSucceed(t: String) {
-                    name.value = t
+        RetrofitPresenter.post(this, "https://www.wanandroid.com/user/login",
+            LoginData("Derry", "1234"),
+            object : BeanCallback<LoginResponse>() {
+                override fun onSucceed(data: LoginResponse, client: RestClient) {
+                    name.value = data.toString()
                 }
             })
     }
