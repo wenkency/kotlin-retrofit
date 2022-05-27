@@ -7,7 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import com.lven.retrofitkotlin.viewmodel.NetViewModel
 import com.retrofit.RxRetrofitPresenter
 import com.retrofit.config.CancelNetUtils
-import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.functions.Consumer
 import io.reactivex.rxjava3.schedulers.Schedulers
 
@@ -55,10 +55,13 @@ class BindingViewModel : NetViewModel() {
             var result = t.string()
             Log.e("TAG", "get : $result")
             post
+        }.map {
+            it.string()
         }.subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(Consumer {
-                var result = it.string()
-                Log.e("TAG", "post : $result")
+                var result = it
+                name.value = result
             })
     }
 
