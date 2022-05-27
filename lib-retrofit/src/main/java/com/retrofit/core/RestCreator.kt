@@ -2,10 +2,12 @@ package com.retrofit.core
 
 import com.google.gson.Gson
 import com.retrofit.api.RestService
+import com.retrofit.api.RxRestService
 import com.retrofit.config.RestConfig
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
+import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import java.io.File
 import java.util.concurrent.TimeUnit
 
@@ -62,6 +64,20 @@ object RestCreator {
     }
 
     /**
+     * 使用配置的URL创建请求接口
+     */
+    fun getRxService(): RxRestService {
+        return getRxService(RestConfig.baseUrl)
+    }
+
+    /**
+     * 用户可以根据URL创建请求
+     */
+    fun getRxService(url: String, client: OkHttpClient? = null): RxRestService {
+        return getRetrofit(url, client).create(RxRestService::class.java)
+    }
+
+    /**
      * 用户可以根据URL创建请求
      */
     fun getService(url: String, client: OkHttpClient? = null): RestService {
@@ -73,6 +89,7 @@ object RestCreator {
         if (retrofit == null) {
             retrofit = Retrofit.Builder()
                 .baseUrl(url)
+                .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
                 .client(client ?: httpClient)
                 .build()
             map[url] = retrofit

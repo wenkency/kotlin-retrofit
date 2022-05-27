@@ -1,15 +1,15 @@
 package com.lven.retrofitkotlin
 
 import android.content.Intent
+import android.util.Log
 import android.view.View
 import androidx.lifecycle.MutableLiveData
-import com.lven.retrofitkotlin.bean.LoginData
-import com.lven.retrofitkotlin.bean.LoginResponse
 import com.lven.retrofitkotlin.viewmodel.NetViewModel
-import com.retrofit.RetrofitPresenter
-import com.retrofit.callback.BeanCallback
+import com.retrofit.RxRetrofitPresenter
 import com.retrofit.config.CancelNetUtils
-import com.retrofit.core.RestClient
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.functions.Consumer
+import io.reactivex.rxjava3.schedulers.Schedulers
 
 /**
  * 销毁自动取消网络请求
@@ -31,12 +31,34 @@ class BindingViewModel : NetViewModel() {
     // 请求网络
     fun requestNet() {
         // 这个要
-        RetrofitPresenter.post(this, "https://www.wanandroid.com/user/login",
-            LoginData("Derry", "1234"),
-            object : BeanCallback<LoginResponse>() {
-                override fun onSucceed(data: LoginResponse, client: RestClient) {
-                    name.value = data.toString()
-                }
+        // "https://www.wanandroid.com/user/login"
+        /*    RetrofitPresenter.post(this, "post",
+                LoginData("Derry", "1234"),
+                object : BeanCallback<LoginResponse>() {
+                    override fun onSucceed(data: LoginResponse, client: RestClient) {
+                        name.value = data.toString()
+                    }
+                })*/
+        /*RxRetrofitPresenter.post(this, "post", object : BeanCallback<String>() {
+            override fun onSucceed(data: String, client: RestClient) {
+                name.value = data
+            }
+        })*/
+        var service = RxRetrofitPresenter.getRxService()
+
+        val get = service.get("get", mutableMapOf(), mutableMapOf(), "${this.hashCode()}")
+
+        val post = service.postForm("post", mutableMapOf(), mutableMapOf(), "${this.hashCode()}")
+        /*var fc=object : Function<in Integer, out SingleSource<String>>(){}
+        }*/
+        get.flatMap { t ->
+            var result = t.string()
+            Log.e("TAG", "get : $result")
+            post
+        }.subscribeOn(Schedulers.io())
+            .subscribe(Consumer {
+                var result = it.string()
+                Log.e("TAG", "post : $result")
             })
     }
 

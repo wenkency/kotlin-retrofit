@@ -9,7 +9,12 @@ import okhttp3.OkHttpClient
  * 自定义URL和OkHttpClient
  */
 object MultiUrlPresenter : IRetrofit {
+
     override fun getService(): RestService {
         return RestCreator.getService("http://httpbin.org", OkHttpClient())
+    }
+
+    override fun isRxService(): Boolean {
+        return false
     }
 }

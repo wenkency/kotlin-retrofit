@@ -46,6 +46,7 @@ dependencies {
 
     // ==============网络请求=============
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:adapter-rxjava3:2.9.0'
     implementation "com.squareup.okhttp3:okhttp:4.9.2"
     implementation "com.squareup.okio:okio:3.0.0-alpha.10"
     // 下载用到

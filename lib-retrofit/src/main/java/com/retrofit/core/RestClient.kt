@@ -3,8 +3,10 @@ package com.retrofit.core
 import androidx.collection.ArrayMap
 import com.retrofit.api.RestMethod
 import com.retrofit.api.RestService
+import com.retrofit.api.RxRestService
 import com.retrofit.callback.ICallback
 import com.retrofit.config.RestConfig
+import io.reactivex.rxjava3.core.Single
 import okhttp3.ResponseBody
 import retrofit2.Call
 
@@ -37,6 +39,13 @@ class RestClient(builder: RestfulBuilder) {
      */
     fun request(callback: ICallback, service: RestService): Call<ResponseBody> {
         return RestCall(this).request(callback, service)
+    }
+
+    /**
+     * 发起RX请求
+     */
+    fun rxRequest(callback: ICallback, service: RxRestService): Single<ResponseBody> {
+        return RestCall(this).rxRequest(callback, service)
     }
 
     class RestfulBuilder {

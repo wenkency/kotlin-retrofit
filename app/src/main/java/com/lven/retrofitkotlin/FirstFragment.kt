@@ -82,7 +82,7 @@ class FirstFragment : Fragment(), IObjectCallback {
 
     private fun get() {
         MainPresenter.get(activity, object : BeanCallback<String>() {
-            override fun onSucceed(result: String) {
+            override fun onSucceed(result: String, client: RestClient) {
                 btn.text = result
             }
         })
@@ -90,8 +90,8 @@ class FirstFragment : Fragment(), IObjectCallback {
 
     private fun post() {
         MainPresenter.post(activity, object : BeanCallback<String>() {
-            override fun onSucceed(result: String) {
-                btn.text = result
+            override fun onSucceed(data: String, client: RestClient) {
+                btn.text = data
             }
         })
     }

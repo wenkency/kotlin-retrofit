@@ -1,23 +1,26 @@
 package com.retrofit
+
 import androidx.collection.ArrayMap
 import com.retrofit.api.FieldToJson
 import com.retrofit.api.RestMethod
 import com.retrofit.api.RestService
+import com.retrofit.api.RxRestService
 import com.retrofit.callback.ICallback
 import com.retrofit.callback.RestCallback
+import com.retrofit.callback.RxRestCallback
 import com.retrofit.core.RestClient
 import com.retrofit.core.RestCreator
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.schedulers.Schedulers
 import java.io.File
 import java.lang.reflect.Field
-import java.util.*
 
 /**
  * APP网络调用统一封装
  */
 interface IRetrofit {
-    /**
-     * 执行方法
-     */
+
+
     fun enqueue(
         tag: Any? = null,
         method: RestMethod, url: String,
@@ -35,7 +38,44 @@ interface IRetrofit {
             .tag(tag.tag())
             .params(params)
             .build()
+        // 这里分支
+        if (isRxService()) {
+            rxRequest(client, method, callback, fileDir, fileName)
+        } else {
+            request(client, method, callback, fileDir, fileName)
+        }
+    }
 
+
+    private fun rxRequest(
+        client: RestClient,
+        method: RestMethod,
+        callback: ICallback,
+        fileDir: File? = null,
+        fileName: String = ""
+    ) {
+        // 回调封装
+        val restCallback = RxRestCallback(
+            callback,
+            method == RestMethod.DOWNLOAD,
+            fileDir,
+            fileName,
+            client
+        )
+        // 这个也是调起请求
+        client.rxRequest(callback, getRxService())
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(restCallback)
+    }
+
+    private fun request(
+        client: RestClient,
+        method: RestMethod,
+        callback: ICallback,
+        fileDir: File? = null,
+        fileName: String = ""
+    ) {
         // 回调封装
         val restCallback = RestCallback(
             callback,
@@ -44,13 +84,28 @@ interface IRetrofit {
             fileName,
             client
         )
+        // 发走请求
         client.request(callback, getService()).enqueue(restCallback)
     }
 
     /**
-     * 重写这个方法就可以更新BaseURL
+     * 普通实现
      */
-    fun getService(): RestService
+    fun getService(): RestService {
+        return RestCreator.getService()
+    }
+
+    /**
+     * Rx实现
+     */
+    fun getRxService(): RxRestService {
+        return RestCreator.getRxService()
+    }
+
+    /**
+     * 这个方法控制是不是RX加载
+     */
+    fun isRxService(): Boolean
 
 
     // == get method===================================================================================
@@ -238,6 +293,7 @@ interface IRetrofit {
     ) {
         enqueue(tag, RestMethod.DELETE, url, headers, params, callback)
     }
+
     fun delete(
         tag: Any? = null,
         url: String,
@@ -246,6 +302,7 @@ interface IRetrofit {
     ) {
         delete(tag, url, null, params, callback)
     }
+
     fun delete(tag: Any? = null, url: String, callback: ICallback) {
         delete(tag, url, null, null, callback)
     }
