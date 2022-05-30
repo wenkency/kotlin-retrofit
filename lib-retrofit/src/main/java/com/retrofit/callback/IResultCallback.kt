@@ -30,7 +30,7 @@ interface IResultCallback {
         client: RestClient
     ) {
         if (responseBody == null) {
-            onResultError(callback, download, "ResponseBody为空", client)
+            onResultError(callback, download, "ResponseBody is null", client)
             return
         }
         try {
@@ -52,6 +52,7 @@ interface IResultCallback {
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(Consumer { file ->
                         callback.onSuccess(file)
+                        callback.onAfter()
                     })
 
             } else {
@@ -66,12 +67,10 @@ interface IResultCallback {
                     }
                 }
                 callback.onSuccess(result, client)
+                callback.onAfter()
             }
-        } catch (e: Exception) {
-            callback.onError(RestErrorCode.REST_ERROR, e.message ?: "", client)
-        } finally {
-
-            callback.onAfter()
+        } catch (e: Throwable) {
+            onResultError(callback, download, "${e.message}", client)
         }
     }
 

@@ -32,7 +32,7 @@ fun writeToDisk(
         bis = BufferedInputStream(inputStream)
         fos = FileOutputStream(file)
         bos = BufferedOutputStream(fos)
-        val data = ByteArray(1024 * 4)
+        val data = ByteArray(1024 * 128)
         var current: Long = 0
         var count: Int
         while (bis.read(data).also { count = it } != -1) {
@@ -63,12 +63,17 @@ fun writeToDisk(
  * 下载文件，默认在：RestConfig.context.filesDir
  */
 fun createFile(dir: File?, name: String): File {
-    if (dir == null) {
-        return File(RestConfig.context.filesDir, name)
-    }
+    // 如果用户传递了目录，就用用户提供的目录，没用就用files目录
+    val downloadDir: File = dir ?: RestConfig.context.filesDir
     // 创建Dir目录
-    dir.mkdirs()
-    return File(dir, name)
+    if (!downloadDir.exists()) {
+        downloadDir.mkdirs()
+    }
+    val file = File(downloadDir, name)
+    if (!file.exists()) {
+        file.createNewFile()
+    }
+    return file
 }
 
 /**

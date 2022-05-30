@@ -8,7 +8,7 @@ import retrofit2.Response
 import java.io.File
 
 /**
- * 请求回调
+ * 普通请求，统一回调处理
  */
 class RestCallback(
     private val callback: ICallback,
@@ -19,12 +19,12 @@ class RestCallback(
 ) :
     Callback<ResponseBody>, IResultCallback {
     override fun onFailure(call: Call<ResponseBody>, e: Throwable) {
-        onResultError(callback, download, "${e.message}",client)
+        onResultError(callback, download, "${e.message}", client)
     }
 
     override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
         try {
-            onResultSuccess(callback, download, response.body(),client)
+            onResultSuccess(callback, download, response.body(), client)
         } catch (e: Throwable) {
             onFailure(call, e)
         }

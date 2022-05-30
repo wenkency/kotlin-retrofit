@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'kotlin-kapt'
 }
 android {
     compileSdkVersion this.app.compileSdkVersion
@@ -48,6 +49,7 @@ dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:adapter-rxjava3:2.9.0'
     implementation "com.squareup.okhttp3:okhttp:4.9.2"
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.9.2'
     implementation "com.squareup.okio:okio:3.0.0-alpha.10"
     // 下载用到
     implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'

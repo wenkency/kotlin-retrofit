@@ -80,7 +80,6 @@ object RestConfig {
         apply {
             this.sslSocketFactory = sslSocketFactory
             this.trustManager = trustManager
-
         }
 
     fun debug(debug: Boolean) = apply {

@@ -40,7 +40,7 @@ interface IRetrofit {
             .build()
         // 这里分支
         if (isRxService()) {
-            rxRequest(client, method, callback, fileDir, fileName)
+            rxRequest(client, method, callback, fileDir, fileName,tag.tag())
         } else {
             request(client, method, callback, fileDir, fileName)
         }
@@ -52,7 +52,8 @@ interface IRetrofit {
         method: RestMethod,
         callback: ICallback,
         fileDir: File? = null,
-        fileName: String = ""
+        fileName: String = "",
+        tag: String?
     ) {
         // 回调封装
         val restCallback = RxRestCallback(
@@ -60,7 +61,8 @@ interface IRetrofit {
             method == RestMethod.DOWNLOAD,
             fileDir,
             fileName,
-            client
+            client,
+            tag
         )
         // 这个也是调起请求
         client.rxRequest(callback, getRxService())

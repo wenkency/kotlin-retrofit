@@ -14,14 +14,7 @@ import retrofit2.Call
 
 class RestCall(private val client: RestClient) {
 
-    /**
-     * 发起请求
-     */
-    fun request(
-        callback: ICallback,
-        service: RestService
-    ): Call<ResponseBody> {
-        // 调用
+    private fun onBefore(callback: ICallback) {
         callback.onBefore(client)
         // 如果是Debug，就打印一下日志
         if (RestConfig.isDebug) {
@@ -29,6 +22,17 @@ class RestCall(private val client: RestClient) {
             Log.e("Request Head", RestCreator.gson.toJson(client.headers))
             Log.e("Request Params", RestCreator.gson.toJson(client.params))
         }
+    }
+
+    /**
+     * 发起请求
+     */
+    fun request(
+        callback: ICallback,
+        service: RestService
+    ): Call<ResponseBody> {
+        // 调用 onBefore
+        onBefore(callback)
 
         return when (client.method) {
             RestMethod.GET -> service.get(client.url, client.headers, client.params, client.tag)
@@ -80,7 +84,9 @@ class RestCall(private val client: RestClient) {
     /**
      * 发起RX请求
      */
-    fun rxRequest(callback: ICallback,service: RxRestService): Single<ResponseBody> {
+    fun rxRequest(callback: ICallback, service: RxRestService): Single<ResponseBody> {
+        // 调用 onBefore
+        onBefore(callback)
         return when (client.method) {
             RestMethod.GET -> service.get(client.url, client.headers, client.params, client.tag)
             RestMethod.DELETE -> service.delete(

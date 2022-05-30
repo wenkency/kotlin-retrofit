@@ -10,7 +10,7 @@ import com.lven.retrofitkotlin.databinding.ActivityBindingBinding
 /**
  * MVVM写法，测试网络请求
  */
-class BindingActivity : AppCompatActivity() {
+class BindingActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,10 +21,5 @@ class BindingActivity : AppCompatActivity() {
         binding.lifecycleOwner = this
     }
 
-    /**
-     * 创建ViewModel
-     */
-    fun <T : ViewModel> getViewModel(clazz: Class<T>): T {
-        return ViewModelProvider(this, ViewModelProvider.NewInstanceFactory()).get(clazz)
-    }
+
 }

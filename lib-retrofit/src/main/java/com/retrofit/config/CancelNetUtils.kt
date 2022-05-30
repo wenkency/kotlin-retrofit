@@ -15,9 +15,12 @@ object CancelNetUtils {
         var runningCalls = RestCreator.httpClient.dispatcher.runningCalls()
         if (runningCalls.isNotEmpty()) {
             for (call in runningCalls) {
-                any.tag().let {
+                any.tag()?.let {
                     if (it == call.request().tag(String::class.java)) {
+                        // 取消网络
                         call.cancel()
+                        // 取消Rx的订阅流程
+                        RxCancelUtils.cancel(it)
                     }
                 }
             }
