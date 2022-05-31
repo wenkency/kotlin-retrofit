@@ -56,18 +56,31 @@ interface IResultCallback {
                     })
 
             } else {
-                val result = responseBody.string()
-                if (RestConfig.isDebug) {
-                    if (RestConfig.isBase64) {
-                        Log.e("Response", client.url)
-                        Log.e("Body", String(Base64.decode(result)))
-                    } else {
-                        Log.e("Response", client.url)
-                        Log.e("Response", result)
+
+                Single.just(responseBody)
+                    .map {
+                        // 解析和打印
+                        val result = it.string()
+                        if (RestConfig.isDebug) {
+                            if (RestConfig.isBase64) {
+                                Log.e("Response", client.url)
+                                Log.e("Body", String(Base64.decode(result)))
+                            } else {
+                                Log.e("Response", client.url)
+                                Log.e("Response", result)
+                            }
+                        }
+
+                        result
                     }
-                }
-                callback.onSuccess(result, client)
-                callback.onAfter()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe { result ->
+                        // 主线程回调
+                        callback.onSuccess(result, client)
+                        callback.onAfter()
+                    }
+
             }
         } catch (e: Throwable) {
             onResultError(callback, download, "${e.message}", client)
