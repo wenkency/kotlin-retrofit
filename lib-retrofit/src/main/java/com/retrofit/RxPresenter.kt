@@ -1,6 +1,6 @@
 package com.retrofit
 
-object RxRetrofitPresenter : IRetrofit {
+object RxPresenter : IRetrofit {
     override fun isRxService(): Boolean {
         return true
     }

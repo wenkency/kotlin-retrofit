@@ -1,11 +1,12 @@
 package com.lven.retrofitkotlin
 
 import android.os.Bundle
-import android.util.Log
 import androidx.databinding.DataBindingUtil
+import com.lven.retrofitkotlin.bean.LoginData
 import com.lven.retrofitkotlin.databinding.ActivityWelcomeBinding
-import io.reactivex.rxjava3.core.Observable
-import java.util.concurrent.TimeUnit
+import com.retrofit.RxPresenter
+import com.retrofit.callback.BeanCallback
+import com.retrofit.core.RestClient
 
 class WelcomeActivity : BaseActivity() {
     private val viewModel: WelcomeViewModel by lazy {
@@ -25,20 +26,14 @@ class WelcomeActivity : BaseActivity() {
     }
 
     inner class Click {
-        fun rxjava() {
+        fun netTest() {
+            RxPresenter.get(this@WelcomeActivity, "get", LoginData("lven", "pwd"),
+                object : BeanCallback<String>() {
+                    override fun onSucceed(data: String, client: RestClient) {
+                        viewModel.result.value = data
+                    }
 
-            val tem = System.currentTimeMillis()
-
-            Observable.interval(500, TimeUnit.MILLISECONDS)
-                .take(4)
-                .subscribe {
-                    Log.e(
-                        "TAG",
-                        "${Thread.currentThread().name}:$it:${System.currentTimeMillis() - tem}"
-                    )
-                }
-            //SystemClock.sleep(100)
-            //disposable?.dispose()
+                })
         }
     }
 }

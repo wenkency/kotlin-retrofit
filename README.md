@@ -19,7 +19,7 @@ allprojects {
     }
 }
 // 依赖
-implementation 'com.github.wenkency:kotlin-retrofit:3.1.3'
+implementation 'com.github.wenkency:kotlin-retrofit:3.1.4'
 // retrofit + okhttp + rxjava3
 implementation 'com.squareup.retrofit2:retrofit:2.9.0'
 implementation "com.squareup.okhttp3:okhttp:4.9.2"

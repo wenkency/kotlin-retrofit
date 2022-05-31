@@ -1,20 +1,14 @@
 package com.lven.retrofitkotlin
 
 import android.content.Intent
-import android.util.Log
 import android.view.View
 import androidx.lifecycle.MutableLiveData
 import com.lven.retrofitkotlin.bean.LoginData
-import com.lven.retrofitkotlin.bean.LoginResponse
 import com.lven.retrofitkotlin.viewmodel.NetViewModel
-import com.retrofit.RetrofitPresenter
-import com.retrofit.RxRetrofitPresenter
+import com.retrofit.RxPresenter
 import com.retrofit.callback.BeanCallback
 import com.retrofit.config.CancelNetUtils
 import com.retrofit.core.RestClient
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.functions.Consumer
-import io.reactivex.rxjava3.schedulers.Schedulers
 
 /**
  * 销毁自动取消网络请求
@@ -44,7 +38,7 @@ class BindingViewModel : NetViewModel() {
                     name.value = data.toString()
                 }
             })*/
-        RxRetrofitPresenter.post(this, "post",
+        RxPresenter.post(this, "post",
             LoginData("Derry", "1234"),
             object : BeanCallback<String>() {
             override fun onSucceed(data: String, client: RestClient) {
