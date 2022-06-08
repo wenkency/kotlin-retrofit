@@ -3,7 +3,10 @@ package com.retrofit.core
 import com.retrofit.callback.ICallback
 import okhttp3.MediaType
 import okhttp3.RequestBody
-import okio.*
+import okio.Buffer
+import okio.BufferedSink
+import okio.ForwardingSink
+import okio.buffer
 import java.io.IOException
 
 /**
@@ -13,6 +16,7 @@ class RestMultipartBody(private val requestBody: RequestBody, private val callba
     RequestBody() {
 
     private var mCurrentLength = 0f
+    private var isWrite = false
 
     override fun contentType(): MediaType? {
         return requestBody.contentType()
@@ -24,6 +28,11 @@ class RestMultipartBody(private val requestBody: RequestBody, private val callba
     }
 
     override fun writeTo(sink: BufferedSink) {
+        // 防止多次写入
+        if (isWrite) {
+            return
+        }
+        isWrite = true
         val totalLength = contentLength().toFloat()
         // 用OKIO的代理类
         val forwardingSink: ForwardingSink = object : ForwardingSink(sink) {

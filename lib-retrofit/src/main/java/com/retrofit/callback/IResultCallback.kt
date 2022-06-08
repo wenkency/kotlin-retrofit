@@ -8,7 +8,6 @@ import com.retrofit.utils.Base64
 import com.retrofit.utils.writeToDisk
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
-import io.reactivex.rxjava3.functions.Consumer
 import io.reactivex.rxjava3.schedulers.Schedulers
 import okhttp3.ResponseBody
 import java.io.File
@@ -50,10 +49,10 @@ interface IResultCallback {
                     }
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(Consumer { file ->
+                    .subscribe { file ->
                         callback.onSuccess(file)
                         callback.onAfter()
-                    })
+                    }
 
             } else {
 

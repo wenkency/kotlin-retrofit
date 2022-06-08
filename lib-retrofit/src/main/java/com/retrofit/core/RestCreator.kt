@@ -5,6 +5,7 @@ import com.retrofit.api.RestService
 import com.retrofit.api.RxRestService
 import com.retrofit.config.RestConfig
 import okhttp3.Cache
+import okhttp3.Dispatcher
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
@@ -15,16 +16,25 @@ import java.util.concurrent.TimeUnit
  * 请求接口的构造器
  */
 object RestCreator {
-    private const val time = 60L
     private val map = mutableMapOf<String, Retrofit>()
-    val gson: Gson by lazy {
-        Gson()
-    }
+
+    // 可以修改
+    var time = 60L
+
+    // 默认使用的GSON，可以修改
+    var gson = Gson()
+
     val httpClient: OkHttpClient by lazy {
+        // 修改最大连接数为69，同一主机同时访问接口数为10
+        val dispatcher = Dispatcher()
+        dispatcher.maxRequests = 69
+        dispatcher.maxRequestsPerHost = 10
+
         val builder = OkHttpClient.Builder()
             .connectTimeout(time, TimeUnit.SECONDS)
             .readTimeout(time, TimeUnit.SECONDS)
             .writeTimeout(time, TimeUnit.SECONDS)
+            .dispatcher(dispatcher)
             .hostnameVerifier(RestConfig.hostnameVerifier)
         // SSL
         try {
@@ -95,5 +105,12 @@ object RestCreator {
             map[url] = retrofit
         }
         return retrofit!!
+    }
+
+    /**
+     * 清除所有请求服务
+     */
+    fun clear() {
+        map.clear()
     }
 }
