@@ -5,7 +5,7 @@ plugins {
     id 'maven-publish'
 }
 group = 'com.github.wenkency'
-version = '3.1.5'
+version = '3.1.7'
 
 afterEvaluate {
     publishing {
@@ -15,7 +15,7 @@ afterEvaluate {
                 from components.release
                 groupId = 'com.github.wenkency'
                 artifactId = 'kotlin-retrofit'
-                version = '3.1.5'
+                version = '3.1.7'
             }
         }
     }
@@ -28,8 +28,8 @@ android {
     defaultConfig {
         minSdkVersion this.app.minSdkVersion
         targetSdkVersion this.app.targetSdkVersion
-        versionCode 315
-        versionName "3.1.5"
+        versionCode 317
+        versionName "3.1.7"
     }
 
     buildTypes {

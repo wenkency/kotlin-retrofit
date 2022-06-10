@@ -59,14 +59,17 @@ interface IResultCallback {
                 Single.just(responseBody)
                     .map {
                         // 解析和打印
-                        val result = it.string()
+                        var result = it.string()
+                        // 打印
                         if (RestConfig.isDebug) {
                             if (RestConfig.isBase64) {
+                                // 这里得转换一下
+                                result = String(Base64.decode(result))
                                 Log.e("Response", client.url)
-                                Log.e("Body", String(Base64.decode(result)))
+                                Log.e("Body", result)
                             } else {
                                 Log.e("Response", client.url)
-                                Log.e("Response", result)
+                                Log.e("Body", result)
                             }
                         }
 
