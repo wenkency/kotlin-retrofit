@@ -24,6 +24,9 @@ object RestCreator {
     // 默认使用的GSON，可以修改
     var gson = Gson()
 
+    // 缓存大小
+    var cacheMaxSize = 100 * 1024 * 1024L
+
     val httpClient: OkHttpClient by lazy {
         // 修改最大连接数为69，同一主机同时访问接口数为10
         val dispatcher = Dispatcher()
@@ -56,7 +59,7 @@ object RestCreator {
             if (!file.exists()) {
                 file.mkdirs()
             }
-            val cache = Cache(file, 100 * 1024 * 1024)
+            val cache = Cache(file, cacheMaxSize)
             builder.cache(cache)
             for (interceptor in netInterceptors) {
                 builder.addNetworkInterceptor(interceptor)
@@ -83,24 +86,24 @@ object RestCreator {
     /**
      * 用户可以根据URL创建请求
      */
-    fun getRxService(url: String, client: OkHttpClient? = null): RxRestService {
+    fun getRxService(url: String, client: OkHttpClient = httpClient): RxRestService {
         return getRetrofit(url, client).create(RxRestService::class.java)
     }
 
     /**
      * 用户可以根据URL创建请求
      */
-    fun getService(url: String, client: OkHttpClient? = null): RestService {
+    fun getService(url: String, client: OkHttpClient = httpClient): RestService {
         return getRetrofit(url, client).create(RestService::class.java)
     }
 
-    private fun getRetrofit(url: String, client: OkHttpClient? = null): Retrofit {
+    private fun getRetrofit(url: String, client: OkHttpClient): Retrofit {
         var retrofit = map[url]
         if (retrofit == null) {
             retrofit = Retrofit.Builder()
                 .baseUrl(url)
                 .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
-                .client(client ?: httpClient)
+                .client(client)
                 .build()
             map[url] = retrofit
         }

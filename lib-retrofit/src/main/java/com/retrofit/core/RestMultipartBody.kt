@@ -7,47 +7,50 @@ import okio.Buffer
 import okio.BufferedSink
 import okio.ForwardingSink
 import okio.buffer
-import java.io.IOException
 
 /**
  * MultipartBody用于上传，下载监听进度
  */
-class RestMultipartBody(private val requestBody: RequestBody, private val callback: ICallback) :
-    RequestBody() {
+class RestMultipartBody(
+    private val body: RequestBody,
+    private val callback: ICallback
+) : RequestBody() {
 
-    private var mCurrentLength = 0f
-    private var isWrite = false
+    private var sink: BufferedSink? = null
 
     override fun contentType(): MediaType? {
-        return requestBody.contentType()
+        return body.contentType()
     }
 
-    @Throws(IOException::class)
     override fun contentLength(): Long {
-        return requestBody.contentLength()
+        return body.contentLength()
     }
 
     override fun writeTo(sink: BufferedSink) {
-        // 防止多次写入
-        if (isWrite) {
-            return
-        }
-        isWrite = true
-        val totalLength = contentLength().toFloat()
         // 用OKIO的代理类
-        val forwardingSink: ForwardingSink = object : ForwardingSink(sink) {
-            @Throws(IOException::class)
-            override fun write(source: Buffer, byteCount: Long) {
-                super.write(source, byteCount)
-                mCurrentLength += byteCount.toFloat()
-                // 上传进度回调
-                val progress = mCurrentLength * 1.0f / totalLength
-                // 在
-                callback.onProgress(progress, mCurrentLength, totalLength)
-            }
-        }
-        val buffer = forwardingSink.buffer()
-        requestBody.writeTo(buffer)
+        val buffer = getBufferedSink(sink)
+        body.writeTo(buffer)
         buffer.flush()
     }
+
+    private fun getBufferedSink(origin: BufferedSink): BufferedSink {
+        if (sink == null) {
+            val forwardingSink = object : ForwardingSink(origin) {
+                private var current = 0f
+                override fun write(source: Buffer, byteCount: Long) {
+                    super.write(source, byteCount)
+
+                    current += byteCount.toFloat()
+                    // 上传进度回调
+                    val progress = current * 1.0f / contentLength().toFloat()
+                    // 回调
+                    callback.onProgress(progress, current, contentLength().toFloat())
+                }
+            }
+            sink = forwardingSink.buffer()
+        }
+        return sink!!
+    }
+
+
 }
