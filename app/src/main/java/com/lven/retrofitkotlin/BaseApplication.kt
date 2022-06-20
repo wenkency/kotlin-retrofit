@@ -12,8 +12,8 @@ class BaseApplication : MultiDexApplication() {
         logInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
         RestConfig.baseUrl("http://httpbin.org")
             .debugUrl("http://httpbin.org")
-            .debug(false)
-            // .interceptor(ProgressInterceptor())
+            .debug(BuildConfig.DEBUG)
+            //.interceptor(ProgressInterceptor())
             //.netInterceptor(logInterceptor) // 打印Log日志
             //.netInterceptor(CacheInterceptor(10)) // 3秒内再请求，走缓存,get请求生效，post不生效
             .register(this)

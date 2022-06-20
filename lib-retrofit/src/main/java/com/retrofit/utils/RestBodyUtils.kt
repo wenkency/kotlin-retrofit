@@ -9,6 +9,7 @@ import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
 import java.net.URLConnection
@@ -63,8 +64,9 @@ private fun fileToBody(
     file: File,
     onCallback: ICallback
 ) {
-//    val fileBody: RequestBody = file.asRequestBody(guessFileType(file.absolutePath))
-    val fileBody: RequestBody = RequestBody.create(guessFileType(file.absolutePath), file)
+    // 旧版本
+    // val fileBody: RequestBody = RequestBody.create(guessFileType(file.absolutePath), file)
+    val fileBody = file.asRequestBody(guessFileType(file.absolutePath))
     builder.addFormDataPart(key, file.name, RestMultipartBody(fileBody, onCallback))
 }
 
