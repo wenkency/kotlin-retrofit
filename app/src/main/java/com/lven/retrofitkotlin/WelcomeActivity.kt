@@ -1,6 +1,7 @@
 package com.lven.retrofitkotlin
 
 import android.os.Bundle
+import android.util.Log
 import androidx.databinding.DataBindingUtil
 import com.lven.retrofitkotlin.bean.LoginData
 import com.lven.retrofitkotlin.databinding.ActivityWelcomeBinding
@@ -20,7 +21,6 @@ class WelcomeActivity : BaseActivity() {
         binding.lifecycleOwner = this
         binding.vm = viewModel
         binding.click = Click()
-
         // 加载图片显示
         viewModel.loadImage()
     }

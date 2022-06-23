@@ -12,6 +12,7 @@ import com.retrofit.core.RestClient
 import com.retrofit.core.RestCreator
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
+import okhttp3.internal.toHexString
 import java.io.File
 import java.lang.reflect.Field
 
@@ -40,7 +41,7 @@ interface IRetrofit {
             .build()
         // 这里分支
         if (isRxService()) {
-            rxRequest(client, method, callback, fileDir, fileName,tag.tag())
+            rxRequest(client, method, callback, fileDir, fileName, tag.tag())
         } else {
             request(client, method, callback, fileDir, fileName)
         }
@@ -378,7 +379,7 @@ fun Any?.tag(): String? {
     if (this == null) {
         return null
     }
-    return "${this::class.simpleName}_${this.hashCode()}"
+    return "${this::class.simpleName}@${this.hashCode().toHexString()}"
 }
 
 /**

@@ -1,10 +1,10 @@
 package com.lven.retrofitkotlin
 
-import androidx.multidex.MultiDexApplication
+import android.app.Application
 import com.retrofit.config.RestConfig
 import okhttp3.logging.HttpLoggingInterceptor
 
-class BaseApplication : MultiDexApplication() {
+class BaseApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         // 1. 初始化

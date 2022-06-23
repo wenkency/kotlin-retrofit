@@ -1,11 +1,88 @@
-ext {
-    app = [
-            // 编译
-            compileSdkVersion: 32,
-            // SDK指向版本
-            targetSdkVersion : 32,
-            // 支持最低版本
-            minSdkVersion    : 14,
+project.ext {
+    // 是不是app
+    def isApp = project.name == 'app'
+    // 编译
+    compileSdkVersion = 32
+    // SDK指向版本
+    targetSdkVersion = 32
+    // 支持最低版本
+    minSdkVersion = 14
+
+    applicationId = "com.lven.retrofitkotlin"
+
+    libs = [
+            'core-ktx'       : 'androidx.core:core-ktx:1.7.0',
+            'appcompat'      : 'androidx.appcompat:appcompat:1.4.2',
+            // =======网络请求库=========
+            'retrofit'       : 'com.squareup.retrofit2:retrofit:2.9.0',
+            'okhttp'         : "com.squareup.okhttp3:okhttp:4.9.2",
+            'adapter-rxjava3': 'com.squareup.retrofit2:adapter-rxjava3:2.9.0',
+            'okio'           : "com.squareup.okio:okio:3.0.0-alpha.10",
+            'rxandroid'      : 'io.reactivex.rxjava3:rxandroid:3.0.0',
+            'rxjava'         : 'io.reactivex.rxjava3:rxjava:3.0.0',
+            'gson'           : 'com.google.code.gson:gson:2.8.9'
     ]
 
+    // 设置APP默认配置
+    setAppDefaultConfig = {
+        // 1. plugin配置
+        apply plugin: 'kotlin-android'
+
+        if (isApp) {
+            apply plugin: 'com.android.application'
+            apply plugin: 'kotlin-kapt'
+        } else {
+            apply plugin: 'com.android.library'
+        }
+
+        // 2. android配置
+        setAndroidConfig(project.android)
+        // 3. 设置依赖
+        setDependencies(project.dependencies)
+
+    }
+    // 2. android配置
+    setAndroidConfig = {
+        android ->
+            android.compileSdkVersion project.compileSdkVersion
+
+            android.defaultConfig {
+                minSdkVersion project.minSdkVersion
+                targetSdkVersion project.targetSdkVersion
+                versionCode 1
+                versionName "1.0"
+                if (isApp) {
+                    applicationId project.applicationId
+                }
+            }
+
+            android.buildTypes {
+                release {
+                    minifyEnabled isApp
+                    proguardFiles android.getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+                }
+                debug {
+                    minifyEnabled isApp
+                    proguardFiles android.getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+                }
+            }
+            android.kotlinOptions {
+                jvmTarget = '1.8'
+            }
+
+    }
+    // 3. 设置依赖
+    setDependencies = {
+        dependencies ->
+            // 设置依赖代理
+            delegate = dependencies
+            if (isApp) {
+                project.libs.each {
+                    k, v -> implementation v
+                }
+            }
+    }
+
 }
+
+project.setAppDefaultConfig()

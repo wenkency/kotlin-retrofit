@@ -1,73 +1,36 @@
+// 使用DataBinding
 plugins {
-    id 'com.android.application'
-    id 'kotlin-android'
     id 'kotlin-kapt'
 }
+
+
+// 引入配置
+apply from: "${rootDir}/config.gradle"
+
+
 android {
-    compileSdkVersion this.app.compileSdkVersion
-    defaultConfig {
-        minSdkVersion this.app.minSdkVersion
-        targetSdkVersion this.app.targetSdkVersion
-        applicationId "com.lven.retrofitkotlin"
-        versionCode 1
-        versionName "1.0"
-        multiDexEnabled true
-    }
-
-    buildTypes {
-        release {
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-        debug {
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
-
-    kotlinOptions {
-        jvmTarget = '1.8'
-    }
-
     dataBinding {
         enabled = true
     }
 }
+
+
+
 dependencies {
-    implementation fileTree(dir: "libs", include: ["*.jar"])
-    implementation 'androidx.core:core-ktx:1.7.0'
-    implementation 'androidx.appcompat:appcompat:1.4.1'
     implementation 'com.google.android.material:material:1.5.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
     implementation 'androidx.navigation:navigation-fragment-ktx:2.3.5'
     implementation 'androidx.navigation:navigation-ui-ktx:2.3.5'
-    implementation 'androidx.multidex:multidex:2.0.1'
-
     // 这个是 ViewModel LiveData
     def lifecycle_version = "2.4.1"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
 
-
     // ==============网络请求=============
-    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-    implementation "com.squareup.okhttp3:okhttp:4.9.2"
     implementation "com.squareup.okhttp3:logging-interceptor:4.9.2"
-    implementation 'com.squareup.retrofit2:adapter-rxjava3:2.9.0'
-    implementation "com.squareup.okio:okio:3.0.0-alpha.10"
-    // 下载用到
-    implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
-    implementation 'io.reactivex.rxjava3:rxjava:3.0.0'
-    // 解析Bean用到
-    implementation 'com.google.code.gson:gson:2.8.9'
     // ==============网络请求=============
-
-
     implementation project(path: ':lib-retrofit')
 
     // 权限请求框架：https://github.com/getActivity/XXPermissions
     // implementation 'com.github.getActivity:XXPermissions:13.6'
-
-    // debugImplementation because LeakCanary should only run in debug builds.
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
 }

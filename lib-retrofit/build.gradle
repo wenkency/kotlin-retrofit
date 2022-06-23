@@ -1,11 +1,21 @@
+// 远程仓库配置
 plugins {
-    id 'com.android.library'
-    id 'kotlin-android'
-    // 远程仓库
     id 'maven-publish'
 }
+def libVersionCode = 318
+def libVersionName = '3.1.8'
 group = 'com.github.wenkency'
-version = '3.1.8'
+version = libVersionName
+
+// 引入配置
+apply from: "${rootDir}/config.gradle"
+
+android {
+    defaultConfig {
+        versionCode libVersionCode
+        versionName libVersionName
+    }
+}
 
 afterEvaluate {
     publishing {
@@ -15,47 +25,22 @@ afterEvaluate {
                 from components.release
                 groupId = 'com.github.wenkency'
                 artifactId = 'kotlin-retrofit'
-                version = '3.1.8'
+                version = libVersionCode
             }
         }
     }
 }
 
-
-android {
-    compileSdkVersion this.app.compileSdkVersion
-
-    defaultConfig {
-        minSdkVersion this.app.minSdkVersion
-        targetSdkVersion this.app.targetSdkVersion
-        versionCode 318
-        versionName "3.1.8"
-    }
-
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
-    kotlinOptions {
-        jvmTarget = '1.8'
-    }
-}
-
 dependencies {
-    implementation fileTree(dir: "libs", include: ["*.jar"])
     compileOnly 'androidx.core:core-ktx:1.7.0'
-    compileOnly 'androidx.appcompat:appcompat:1.4.1'
+    compileOnly 'androidx.appcompat:appcompat:1.4.2'
     // =======网络请求库=========
     compileOnly 'com.squareup.retrofit2:retrofit:2.9.0'
     compileOnly "com.squareup.okhttp3:okhttp:4.9.2"
     compileOnly 'com.squareup.retrofit2:adapter-rxjava3:2.9.0'
-    compileOnly "com.squareup.okhttp3:okhttp:4.9.2"
     compileOnly "com.squareup.okio:okio:3.0.0-alpha.10"
     compileOnly 'io.reactivex.rxjava3:rxandroid:3.0.0'
     compileOnly 'io.reactivex.rxjava3:rxjava:3.0.0'
     compileOnly 'com.google.code.gson:gson:2.8.9'
-    // =======网络请求库=========
 }
 
