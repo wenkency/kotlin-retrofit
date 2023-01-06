@@ -39,6 +39,10 @@ object RestCreator {
             .writeTimeout(time, TimeUnit.SECONDS)
             .dispatcher(dispatcher)
             .hostnameVerifier(RestConfig.hostnameVerifier)
+        // 添加 用户设置的cookie
+        RestConfig.cookieJar?.let {
+            builder.cookieJar(it)
+        }
         // SSL
         try {
             builder.sslSocketFactory(RestConfig.sslSocketFactory, RestConfig.trustManager)

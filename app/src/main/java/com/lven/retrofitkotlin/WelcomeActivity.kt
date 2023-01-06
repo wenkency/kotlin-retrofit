@@ -10,27 +10,45 @@ import com.retrofit.callback.BeanCallback
 import com.retrofit.core.RestClient
 
 class WelcomeActivity : BaseActivity() {
-    private val viewModel: WelcomeViewModel by lazy {
-        getAndroidViewModel(WelcomeViewModel::class.java)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding: ActivityWelcomeBinding =
             DataBindingUtil.setContentView(this, R.layout.activity_welcome)
         binding.lifecycleOwner = this
-        binding.vm = viewModel
+        // 绑定点击事件
         binding.click = Click()
-        // 加载图片显示
-        viewModel.loadImage()
     }
 
     inner class Click {
-        fun netTest() {
-            RxPresenter.get(this@WelcomeActivity, "get", LoginData("lven", "pwd"),
+        fun login() {
+            // 登录接口
+            RxPresenter.postForm(this@WelcomeActivity,
+                "/user/login", LoginData("lven", "123456"),
                 object : BeanCallback<String>() {
                     override fun onSucceed(data: String, client: RestClient) {
-                        viewModel.result.value = data
+                        Log.e("TAG", "$data")
+                    }
+                })
+        }
+
+        fun unLogin() {
+            // 退出登录
+            val url = "/user/logout/json"
+            RxPresenter.get(this@WelcomeActivity, url, object : BeanCallback<String>() {
+                override fun onSucceed(data: String, client: RestClient) {
+                    Log.e("TAG", "$data")
+                }
+
+            })
+        }
+
+        fun netTest() {
+            // 收藏接口测试-- cookie
+            val url = "/lg/collect/list/0/json"
+            RxPresenter.get(this@WelcomeActivity, url,
+                object : BeanCallback<String>() {
+                    override fun onSucceed(data: String, client: RestClient) {
+                        Log.e("TAG", "$data")
                     }
 
                 })

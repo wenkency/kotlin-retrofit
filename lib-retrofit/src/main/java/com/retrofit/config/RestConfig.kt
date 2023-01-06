@@ -6,6 +6,7 @@ import android.content.Context
 import android.text.TextUtils
 import androidx.collection.ArrayMap
 import com.retrofit.utils.RestSSLUtils
+import okhttp3.CookieJar
 import okhttp3.Interceptor
 import javax.net.ssl.HostnameVerifier
 import javax.net.ssl.SSLSocketFactory
@@ -62,6 +63,9 @@ object RestConfig {
     // SSL
     var sslSocketFactory: SSLSocketFactory = RestSSLUtils.initSSLSocketFactory()
     var trustManager: X509TrustManager = RestSSLUtils.initTrustManager()
+
+    // cookie
+    var cookieJar: CookieJar? = null
 
 
     fun baseUrl(baseUrl: String) = apply {

@@ -9,6 +9,9 @@ apply from: "${rootDir}/config.gradle"
 
 
 android {
+    defaultConfig {
+        multiDexEnabled true
+    }
     dataBinding {
         enabled = true
     }
@@ -17,20 +20,24 @@ android {
 
 
 dependencies {
-    implementation 'com.google.android.material:material:1.5.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.5'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.3.5'
+    implementation 'com.google.android.material:material:1.7.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.4.1'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.4.1'
     // 这个是 ViewModel LiveData
-    def lifecycle_version = "2.4.1"
+    def lifecycle_version = "2.5.1"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
 
     // ==============网络请求=============
-    implementation "com.squareup.okhttp3:logging-interceptor:4.9.2"
+    implementation "com.squareup.okhttp3:logging-interceptor:4.10.0"
     // ==============网络请求=============
     implementation project(path: ':lib-retrofit')
 
     // 权限请求框架：https://github.com/getActivity/XXPermissions
     // implementation 'com.github.getActivity:XXPermissions:13.6'
+
+    implementation 'androidx.multidex:multidex:2.0.1'
+
+
 }

@@ -7,7 +7,8 @@ import okhttp3.Response
 /**
  * 缓存拦截器
  */
-class CacheInterceptor(private val maxAge: Long = 0L) : Interceptor {
+
+data class CacheInterceptor(val maxAge: Long = 0L) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
         var cacheControl = request.cacheControl.toString()

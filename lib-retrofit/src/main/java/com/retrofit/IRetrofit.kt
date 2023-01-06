@@ -12,7 +12,6 @@ import com.retrofit.core.RestClient
 import com.retrofit.core.RestCreator
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
-import okhttp3.internal.toHexString
 import java.io.File
 import java.lang.reflect.Field
 
@@ -379,7 +378,7 @@ fun Any?.tag(): String? {
     if (this == null) {
         return null
     }
-    return "${this::class.simpleName}@${this.hashCode().toHexString()}"
+    return "${this::class.simpleName}@${this.hashCode()}"
 }
 
 /**

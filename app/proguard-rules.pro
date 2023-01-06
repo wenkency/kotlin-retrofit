@@ -21,3 +21,5 @@
 -keep,allowobfuscation,allowshrinking class retrofit2.Response
 -keep,allowobfuscation,allowshrinking class kotlin.coroutines.Continuation
 # Retrofit=================
+
+-keep class com.lven.retrofitkotlin.bean.**{*;}
