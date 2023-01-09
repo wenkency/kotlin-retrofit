@@ -58,11 +58,11 @@ project.ext {
 
             android.buildTypes {
                 release {
-                    minifyEnabled false
+                    minifyEnabled isApp
                     proguardFiles android.getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
                 }
                 debug {
-                    minifyEnabled false
+                    minifyEnabled isApp
                     proguardFiles android.getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
                 }
             }
