@@ -39,5 +39,8 @@ dependencies {
 
     implementation 'androidx.multidex:multidex:2.0.1'
 
+    // 权限请求框架：https://github.com/getActivity/XXPermissions
+    implementation 'com.github.getActivity:XXPermissions:16.6'
+
 
 }

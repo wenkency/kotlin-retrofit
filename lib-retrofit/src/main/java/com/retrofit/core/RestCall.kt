@@ -1,11 +1,9 @@
 package com.retrofit.core
 
-import android.util.Log
 import com.retrofit.api.RestMethod
 import com.retrofit.api.RestService
 import com.retrofit.api.RxRestService
 import com.retrofit.callback.ICallback
-import com.retrofit.config.RestConfig
 import com.retrofit.utils.multipartBody
 import com.retrofit.utils.requestBody
 import io.reactivex.rxjava3.core.Single
@@ -17,11 +15,11 @@ class RestCall(private val client: RestClient) {
     private fun onBefore(callback: ICallback) {
         callback.onBefore(client)
         // 如果是Debug，就打印一下日志
-        if (RestConfig.isDebug) {
-            Log.e("Request Url", client.url)
-            Log.e("Request Head", RestCreator.gson.toJson(client.headers))
-            Log.e("Request Params", RestCreator.gson.toJson(client.params))
-        }
+        /*     if (RestConfig.isDebug) {
+                 Log.e("Request Url", client.url)
+                 Log.e("Request Head", RestCreator.gson.toJson(client.headers))
+                 Log.e("Request Params", RestCreator.gson.toJson(client.params))
+             }*/
     }
 
     /**

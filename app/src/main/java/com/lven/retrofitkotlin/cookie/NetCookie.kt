@@ -7,7 +7,7 @@ import okhttp3.HttpUrl
 /**
  * 网络请求对Cookie的处理
  */
-class NetCookie : CookieJar {
+object NetCookie : CookieJar {
     private val loginUrl = "https://www.wanandroid.com/user/login"
     private val loginCookies = arrayListOf<Cookie>()
 

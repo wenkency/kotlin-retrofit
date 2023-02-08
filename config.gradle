@@ -26,11 +26,10 @@ project.ext {
     // 设置APP默认配置
     setAppDefaultConfig = {
         // 1. plugin配置
-        apply plugin: 'kotlin-android'
+        apply plugin: 'org.jetbrains.kotlin.android'
 
         if (isApp) {
             apply plugin: 'com.android.application'
-            apply plugin: 'kotlin-kapt'
         } else {
             apply plugin: 'com.android.library'
         }
@@ -44,11 +43,11 @@ project.ext {
     // 2. android配置
     setAndroidConfig = {
         android ->
-            android.compileSdkVersion project.compileSdkVersion
+            android.compileSdk project.compileSdkVersion
 
             android.defaultConfig {
-                minSdkVersion project.minSdkVersion
-                targetSdkVersion project.targetSdkVersion
+                minSdk project.minSdkVersion
+                targetSdk project.targetSdkVersion
                 versionCode 1
                 versionName "1.0"
                 if (isApp) {
@@ -58,14 +57,20 @@ project.ext {
 
             android.buildTypes {
                 release {
-                    minifyEnabled isApp
+                    minifyEnabled false
                     proguardFiles android.getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
                 }
                 debug {
-                    minifyEnabled isApp
+                    minifyEnabled false
                     proguardFiles android.getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
                 }
             }
+
+            android.compileOptions {
+                sourceCompatibility JavaVersion.VERSION_1_8
+                targetCompatibility JavaVersion.VERSION_1_8
+            }
+
             android.kotlinOptions {
                 jvmTarget = '1.8'
             }
