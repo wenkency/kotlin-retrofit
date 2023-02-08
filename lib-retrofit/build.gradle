@@ -2,20 +2,14 @@
 plugins {
     id 'maven-publish'
 }
-def libVersionCode = 320
-def libVersionName = '3.2.0'
-group = 'com.github.wenkency'
-version = libVersionName
-
 // 引入配置
 apply from: "${rootDir}/config.gradle"
 
-android {
-    defaultConfig {
-        versionCode libVersionCode
-        versionName libVersionName
-    }
-}
+// === 远程仓库配置 ===
+def libVersionCode = 321
+def libVersionName = '3.2.1'
+group = 'com.github.wenkency'
+version = libVersionName
 
 afterEvaluate {
     publishing {
@@ -30,6 +24,7 @@ afterEvaluate {
         }
     }
 }
+// === 远程仓库配置 ===
 
 dependencies {
     compileOnly 'androidx.core:core-ktx:1.9.0'
