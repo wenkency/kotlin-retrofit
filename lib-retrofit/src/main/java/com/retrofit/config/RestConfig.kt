@@ -20,7 +20,7 @@ import javax.net.ssl.X509TrustManager
  */
 @SuppressLint("StaticFieldLeak")
 object RestConfig {
-    private lateinit var context: Context
+    lateinit var context: Context
     var isDebug = false
 
     // 请求数据转换，默认是返回自己
@@ -40,7 +40,7 @@ object RestConfig {
     private var debugUrl = ""
 
     // 默认URL
-    private var baseUrl = ""
+    var baseUrl = ""
         get() {
             if (isDebug && !TextUtils.isEmpty(debugUrl)) {
                 return debugUrl
