@@ -11,7 +11,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.lven.retrofitkotlin.presenter.MainPresenter
-import com.retrofit.RetrofitPresenter
+import com.retrofit.ApiClient
 import com.retrofit.callback.BeanCallback
 import com.retrofit.callback.CallbackAdapter
 import com.retrofit.callback.IObjectCallback
@@ -24,7 +24,7 @@ import java.io.File
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
  */
-class FirstFragment : Fragment(), IObjectCallback {
+class FirstFragment : Fragment(), IObjectCallback, CoroutineScope by MainScope() {
     lateinit var btn: TextView
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -61,7 +61,7 @@ class FirstFragment : Fragment(), IObjectCallback {
     private fun doDownload() {
         val url =
             "https://img.car-house.cn/Upload/activity/20200424/J3GEiBhpAMfkesHCm7EWaQGwxDDwNbMc.png"
-        RetrofitPresenter.download(
+        ApiClient.download(
             activity,
             url,
             activity?.getExternalFilesDir(Environment.DIRECTORY_PICTURES),
@@ -105,21 +105,23 @@ class FirstFragment : Fragment(), IObjectCallback {
      * 同时请求两个接口
      */
     private fun async() {
-        val service = RestCreator.getService()
-        GlobalScope.launch(Dispatchers.Main) {
+        val service = RestCreator.getSuspendService()
+        launch(Dispatchers.Main) {
             Log.e("TAG", "async---1---")
+            // 不阻塞线程，在后台开启协程 最后一行为返回值
             val getResult = async(Dispatchers.IO) {
-                val get = service.get("get", mutableMapOf(), mutableMapOf(), "${this.hashCode()}")
-                val response = get.execute()
+                val response =
+                    service.get("get", mutableMapOf(), mutableMapOf(), "${this.hashCode()}")
                 Log.e("TAG", "async---2---")
-                response.body()!!.string()
+                // 返回值
+                "${response.body()?.string()}"
             }
             val postResult = async(Dispatchers.IO) {
-                val get =
+                val response =
                     service.postForm("post", mutableMapOf(), mutableMapOf(), "${this.hashCode()}")
-                val response = get.execute()
                 Log.e("TAG", "async---3---")
-                response.body()!!.string()
+                // 返回值
+                "${response.body()?.string()}"
             }
             Log.e("TAG", "async---4---")
 

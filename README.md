@@ -19,7 +19,7 @@ allprojects {
     }
 }
 // 依赖
-implementation 'com.github.wenkency:kotlin-retrofit:3.2.1'
+implementation 'com.github.wenkency:kotlin-retrofit:3.2.2'
 // retrofit + okhttp + rxjava3
 implementation 'com.squareup.retrofit2:retrofit:2.9.0'
 implementation 'com.squareup.retrofit2:adapter-rxjava3:2.9.0'
@@ -40,6 +40,12 @@ implementation 'com.google.code.gson:gson:2.8.9'
 }
 ```
 
+### API服务核心类
+
+```
+RestCreator，可以构建出：ApiClient（普通方式）、RxClient（Rx方式）、SuspendClient（协程方式）
+```
+
 ### Application初始化
 
 ```
@@ -54,7 +60,7 @@ public class BaseApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        // 1. 初始化
+        // 1. 初始化 参考Demo
         RestConfig.baseUrl("http://httpbin.org/")
                 .debugUrl("http://httpbin.org/")
                 .debug(true)
@@ -87,13 +93,13 @@ fun postObj(activity: Activity?, callback: IObjectCallback, clazz: Class<*>) {
  * get请求
  */
 fun get(activity: Activity?, callback: ICallback) {
-    RetrofitPresenter.get(activity, "https://www.baidu.com", callback)
+    ApiClient.get(activity, "https://www.baidu.com", callback)
 }
 /**
  * post请求
  */
 fun post(activity: Activity?, callback: ICallback) {
-    RetrofitPresenter.post(activity, "post", Bean("100"), callback)
+    ApiClient.post(activity, "post", Bean("100"), callback)
 } 
 
 
@@ -101,7 +107,7 @@ fun post(activity: Activity?, callback: ICallback) {
  * post请求
  */
 private fun post() {
-    RetrofitPresenter.post(activity, "post", Bean("100"),
+    ApiClient.post(activity, "post", Bean("100"),
         object : BeanCallback<String>() {
 
             override fun onError(code: Int, message: String) {
@@ -115,27 +121,31 @@ private fun post() {
 }
 
 /**
- * 同时请求两个接口
+ * 协程单独使用 同时请求两个接口
  */
 private fun async() {
-    val service = RestCreator.getService()
+    // 这个是获取 协程的API 统一请求接口
+    val service = RestCreator.getSuspendService()
+    
     GlobalScope.launch(Dispatchers.Main) {
         Log.e("TAG", "async---1---")
+        // asysnc 不阻塞 在后台开启协程 有返回值
         val getResult = async(Dispatchers.IO) {
-            val get = service.get("get", mutableMapOf(), mutableMapOf(), "${this.hashCode()}")
-            val response = get.execute()
+            val response = service.get("get", mutableMapOf(), mutableMapOf(), "${this.hashCode()}")
             Log.e("TAG", "async---2---")
-            response.body()!!.string()
+            // 返回请求结果
+            "${response.body()?.string()}"
         }
         val postResult = async(Dispatchers.IO) {
-            val get =
+            val response =
                 service.postForm("post", mutableMapOf(), mutableMapOf(), "${this.hashCode()}")
-            val response = get.execute()
             Log.e("TAG", "async---3---")
-            response.body()!!.string()
+            // 返回请求结果
+            "${response.body()?.string()}"
         }
         Log.e("TAG", "async---4---")
 
+        // await() 等待返回结果
         btn.text = getResult.await() + "\n" + postResult.await()
 
         Log.e("TAG", "async---5---")
@@ -153,7 +163,7 @@ private fun async() {
 /**
  * 普通网络请求,继承IRetrofit
  */
-object RetrofitPresenter : IRetrofit {
+object ApiClient : IRetrofit {
 
     /**
      * 可以根据URL获取请求接口
@@ -216,7 +226,7 @@ class BindingViewModel : NetViewModel() {
     // 请求网络
     fun requestNet() {
         // 这个要
-        RetrofitPresenter.post(this, "post", Bean("100"),
+        ApiClient.post(this, "post", Bean("100"),
             object : BeanCallback<String>() {
                 override fun onSucceed(t: String) {
                     name.value = t

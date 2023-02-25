@@ -3,101 +3,101 @@ package com.retrofit.api
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
-import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.*
 
 /**
- * 请求API接口
+ * 协程请求API接口
  */
-interface RestService {
+interface SuspendService {
     /**
      * Get请求
      */
     @GET
-    fun get(
+    suspend fun get(
         @Url url: String,
         @HeaderMap headers: MutableMap<String, String>,
         @QueryMap params: MutableMap<String, Any>,
         @Tag tag: String
-    ): Call<ResponseBody>
+    ): Response<ResponseBody>
 
     /**
      * Delete请求
      */
     @DELETE
-    fun delete(
+    suspend fun delete(
         @Url url: String,
         @HeaderMap headers: MutableMap<String, String>,
         @QueryMap params: MutableMap<String, Any>,
         @Tag tag: String
-    ): Call<ResponseBody>
+    ): Response<ResponseBody>
 
     /**
      * Post Json请求
      */
     @POST
-    fun post(
+    suspend fun post(
         @Url url: String,
         @HeaderMap headers: MutableMap<String, String>,
         @Body requestBody: RequestBody,
         @Tag tag: String
-    ): Call<ResponseBody>
+    ): Response<ResponseBody>
 
     /**
      * Put Json请求
      */
     @PUT
-    fun put(
+    suspend fun put(
         @Url url: String,
         @HeaderMap headers: MutableMap<String, String>,
         @Body requestBody: RequestBody,
         @Tag tag: String
-    ): Call<ResponseBody>
+    ): Response<ResponseBody>
 
     /**
      * Post 表单请求
      */
     @POST
     @FormUrlEncoded
-    fun postForm(
+    suspend fun postForm(
         @Url url: String,
         @HeaderMap headers: MutableMap<String, String>,
         @FieldMap params: MutableMap<String, Any>,
         @Tag tag: String
-    ): Call<ResponseBody>
+    ): Response<ResponseBody>
 
     /**
      * Post 表单请求
      */
     @PUT
     @FormUrlEncoded
-    fun putForm(
+    suspend fun putForm(
         @Url url: String,
         @HeaderMap headers: MutableMap<String, String>,
         @FieldMap params: MutableMap<String, Any>,
         @Tag tag: String
-    ): Call<ResponseBody>
+    ): Response<ResponseBody>
 
     /**
      * 下载
      */
     @GET
     @Streaming
-    fun download(
+    suspend fun download(
         @Url url: String,
         @HeaderMap headers: MutableMap<String, String>,
         @QueryMap params: MutableMap<String, Any>,
         @Tag tag: String
-    ): Call<ResponseBody>
+    ): Response<ResponseBody>
 
     /**
      * 上传
      */
     @POST
-    fun upload(
+    suspend fun upload(
         @Url url: String,
         @HeaderMap headers: MutableMap<String, String>,
         @Body requestBody: MultipartBody,
         @Tag tag: String
-    ): Call<ResponseBody>
+    ): Response<ResponseBody>
 }

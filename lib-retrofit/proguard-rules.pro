@@ -20,5 +20,5 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 -keep class *{
-@com.retrofit.api.FieldToJson <fields>;
+@com.retrofit.method.FieldToJson <fields>;
 }

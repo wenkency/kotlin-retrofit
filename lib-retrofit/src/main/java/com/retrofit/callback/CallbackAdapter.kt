@@ -3,6 +3,9 @@ package com.retrofit.callback
 import com.retrofit.core.RestClient
 import java.io.File
 
+/**
+ * 回调适配器
+ */
 open class CallbackAdapter : ICallback {
     override fun onBefore(client: RestClient) {
 

@@ -3,6 +3,7 @@ package com.retrofit.utils
 import android.text.TextUtils
 import com.retrofit.callback.ICallback
 import com.retrofit.config.RestConfig
+import com.retrofit.core.RestClient
 import com.retrofit.core.RestCreator
 import com.retrofit.core.RestMultipartBody
 import okhttp3.MediaType
@@ -19,9 +20,9 @@ import java.net.URLConnection
  */
 fun multipartBody(params: MutableMap<String, Any>, callback: ICallback): MultipartBody {
     // 多文本二进制表单
-    var builder = MultipartBody.Builder().setType(MultipartBody.FORM)
+    val builder = MultipartBody.Builder().setType(MultipartBody.FORM)
     for ((key, value) in params) {
-        if (TextUtils.isEmpty(key) || value == null) {
+        if (TextUtils.isEmpty(key)) {
             continue
         }
         when (value) {
@@ -35,6 +36,7 @@ fun multipartBody(params: MutableMap<String, Any>, callback: ICallback): Multipa
                 }
             }
             else -> {
+                // 这里没有调用加密
                 builder.addFormDataPart(key, value.toString())
             }
         }
@@ -45,13 +47,10 @@ fun multipartBody(params: MutableMap<String, Any>, callback: ICallback): Multipa
 /**
  * 创建请求体，针对Json请求
  */
-fun requestBody(params: MutableMap<String, Any>): RequestBody {
-    var content = RestCreator.gson.toJson(params)
-    // 这里是Base64编码
-    if (RestConfig.isBase64) {
-        content = Base64.encode(content.toByteArray())
-    }
-    // return RequestBody.create(MediaType.get("application/json;charset=UTF-8"), content)
+fun requestBody(client: RestClient): RequestBody {
+    // 请求数据 ，调用了转换如果需要，可以配置
+    val content = RestConfig.requestConvertStr(client, RestCreator.gson.toJson(client.params))
+
     return content.toRequestBody("application/json;charset=UTF-8".toMediaType())
 }
 

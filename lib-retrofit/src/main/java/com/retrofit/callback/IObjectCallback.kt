@@ -2,6 +2,9 @@ package com.retrofit.callback
 
 import com.retrofit.core.RestClient
 
+/**
+ * 目的是一个页面，多个接口在一个方法回调
+ */
 interface IObjectCallback : ICallback {
 
     fun onBefore(client: RestClient, clazz: Class<*>?, requestCode: Int = -1)

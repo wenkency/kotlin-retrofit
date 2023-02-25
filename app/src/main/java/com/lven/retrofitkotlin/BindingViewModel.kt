@@ -5,7 +5,7 @@ import android.view.View
 import androidx.lifecycle.MutableLiveData
 import com.lven.retrofitkotlin.bean.LoginData
 import com.lven.retrofitkotlin.viewmodel.NetViewModel
-import com.retrofit.RxPresenter
+import com.retrofit.RxClient
 import com.retrofit.callback.BeanCallback
 import com.retrofit.config.CancelNetUtils
 import com.retrofit.core.RestClient
@@ -38,7 +38,7 @@ class BindingViewModel : NetViewModel() {
                     name.value = data.toString()
                 }
             })*/
-        RxPresenter.post(this, "post",
+        RxClient.post(this, "post",
             LoginData("Derry", "1234"),
             object : BeanCallback<String>() {
             override fun onSucceed(data: String, client: RestClient) {

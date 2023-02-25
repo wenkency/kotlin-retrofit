@@ -35,12 +35,6 @@ public class LoadMultiDexActivity extends Activity {
         Log.e(TAG, "MultiDex.install 开始: ");
         long startTime = System.currentTimeMillis();
         MultiDex.install(LoadMultiDexActivity.this);
-        try {
-            //模拟MultiDex耗时操作
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         Log.e(TAG, "MultiDex.install 结束，耗时: " + (System.currentTimeMillis() - startTime));
         aftetMultiDex();
     }

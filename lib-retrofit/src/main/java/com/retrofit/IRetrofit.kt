@@ -1,17 +1,20 @@
 package com.retrofit
 
 import androidx.collection.ArrayMap
-import com.retrofit.api.FieldToJson
-import com.retrofit.api.RestMethod
-import com.retrofit.api.RestService
-import com.retrofit.api.RxRestService
+import com.retrofit.api.RxService
+import com.retrofit.api.ApiService
+import com.retrofit.api.SuspendService
 import com.retrofit.callback.ICallback
-import com.retrofit.callback.RestCallback
-import com.retrofit.callback.RxRestCallback
+import com.retrofit.callback.RxServiceCallback
+import com.retrofit.callback.ServiceCallback
+import com.retrofit.config.RestConfig
 import com.retrofit.core.RestClient
 import com.retrofit.core.RestCreator
+import com.retrofit.method.FieldToJson
+import com.retrofit.method.RestMethod
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlinx.coroutines.launch
 import java.io.File
 import java.lang.reflect.Field
 
@@ -19,7 +22,6 @@ import java.lang.reflect.Field
  * APP网络调用统一封装
  */
 interface IRetrofit {
-
 
     fun enqueue(
         tag: Any? = null,
@@ -40,12 +42,43 @@ interface IRetrofit {
             .build()
         // 这里分支
         if (isRxService()) {
+            // rxjava
             rxRequest(client, method, callback, fileDir, fileName, tag.tag())
+        } else if (isSuspendService()) {
+            // 协程
+            suspendRequest(client, method, callback, fileDir, fileName)
         } else {
+            // 正常线程
             request(client, method, callback, fileDir, fileName)
         }
     }
 
+    private fun suspendRequest(
+        client: RestClient,
+        method: RestMethod,
+        callback: ICallback,
+        fileDir: File? = null,
+        fileName: String = ""
+    ) {
+        // 发走请求
+        RestConfig.scope.launch {
+            // 回调封装
+            val serviceCallback = ServiceCallback(
+                callback,
+                method == RestMethod.DOWNLOAD,
+                fileDir,
+                fileName,
+                client
+            )
+            try {
+                val response = client.request(callback, getSuspendService())
+                serviceCallback.onResponse(null, response)
+            } catch (e: Throwable) {
+                serviceCallback.onFailure(null, e)
+            }
+        }
+
+    }
 
     private fun rxRequest(
         client: RestClient,
@@ -56,7 +89,7 @@ interface IRetrofit {
         tag: String?
     ) {
         // 回调封装
-        val restCallback = RxRestCallback(
+        val restCallback = RxServiceCallback(
             callback,
             method == RestMethod.DOWNLOAD,
             fileDir,
@@ -65,7 +98,7 @@ interface IRetrofit {
             tag
         )
         // 这个也是调起请求
-        client.rxRequest(callback, getRxService())
+        client.request(callback, getRxService())
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(restCallback)
@@ -79,7 +112,7 @@ interface IRetrofit {
         fileName: String = ""
     ) {
         // 回调封装
-        val restCallback = RestCallback(
+        val serviceCallback = ServiceCallback(
             callback,
             method == RestMethod.DOWNLOAD,
             fileDir,
@@ -87,20 +120,27 @@ interface IRetrofit {
             client
         )
         // 发走请求
-        client.request(callback, getService()).enqueue(restCallback)
+        client.request(callback, getService()).enqueue(serviceCallback)
     }
 
     /**
      * 普通实现
      */
-    fun getService(): RestService {
+    fun getService(): ApiService {
         return RestCreator.getService()
+    }
+
+    /**
+     * 协程实现的服务
+     */
+    fun getSuspendService(): SuspendService {
+        return RestCreator.getSuspendService()
     }
 
     /**
      * Rx实现
      */
-    fun getRxService(): RxRestService {
+    fun getRxService(): RxService {
         return RestCreator.getRxService()
     }
 
@@ -108,6 +148,11 @@ interface IRetrofit {
      * 这个方法控制是不是RX加载
      */
     fun isRxService(): Boolean
+
+    /**
+     * 是不是协程方式
+     */
+    fun isSuspendService(): Boolean
 
 
     // == get method===================================================================================
@@ -402,7 +447,7 @@ fun Array<out String>.arrayToMap(): MutableMap<String, Any> {
  */
 fun Any.anyToMap(): MutableMap<String, Any> {
     val map = ArrayMap<String, Any>()
-    var allFields = getAllFields(this)
+    var allFields = this.getAllFields()
     allFields.forEach { field ->
         try {
             val name = field.name
@@ -423,10 +468,11 @@ fun Any.anyToMap(): MutableMap<String, Any> {
     return map
 }
 
-fun getAllFields(obj: Any): List<Field> {
-    var clazz: Class<*>? = obj.javaClass
+fun Any.getAllFields(): List<Field> {
+    var clazz: Class<*>? = this.javaClass
     val fieldList: MutableList<Field> = ArrayList()
-    while (clazz != null) {
+    // 这里的父类，去除Object
+    while (clazz != null && clazz != Object::class.java) {
         fieldList.addAll(ArrayList(listOf(*clazz.declaredFields)))
         clazz = clazz.superclass
     }

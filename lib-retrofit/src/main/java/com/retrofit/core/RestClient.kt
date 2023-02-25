@@ -1,14 +1,16 @@
 package com.retrofit.core
 
 import androidx.collection.ArrayMap
-import com.retrofit.api.RestMethod
-import com.retrofit.api.RestService
-import com.retrofit.api.RxRestService
+import com.retrofit.api.RxService
+import com.retrofit.api.ApiService
+import com.retrofit.api.SuspendService
 import com.retrofit.callback.ICallback
 import com.retrofit.config.RestConfig
+import com.retrofit.method.RestMethod
 import io.reactivex.rxjava3.core.Single
 import okhttp3.ResponseBody
 import retrofit2.Call
+import retrofit2.Response
 
 
 /**
@@ -37,14 +39,21 @@ class RestClient(builder: RestfulBuilder) {
     /**
      * 发起请求
      */
-    fun request(callback: ICallback, service: RestService): Call<ResponseBody> {
+    fun request(callback: ICallback, service: ApiService): Call<ResponseBody> {
         return RestCall(this).request(callback, service)
     }
 
     /**
-     * 发起RX请求
+     * 协程方式发起请求
      */
-    fun rxRequest(callback: ICallback, service: RxRestService): Single<ResponseBody> {
+    suspend fun request(callback: ICallback, service: SuspendService): Response<ResponseBody> {
+        return RestCall(this).suspendRequest(callback, service)
+    }
+
+    /**
+     * Rxjava方式发起请求
+     */
+    fun request(callback: ICallback, service: RxService): Single<ResponseBody> {
         return RestCall(this).rxRequest(callback, service)
     }
 

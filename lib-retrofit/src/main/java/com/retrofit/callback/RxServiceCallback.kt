@@ -11,7 +11,7 @@ import java.io.File
 /**
  * Rx请求，统一回调处理
  */
-class RxRestCallback(
+class RxServiceCallback(
     private val callback: ICallback,
     private val download: Boolean,
     private val fileDir: File?,

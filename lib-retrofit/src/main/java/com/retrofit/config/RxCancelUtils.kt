@@ -29,7 +29,7 @@ object RxCancelUtils {
      * 根据TAG移除Disposable
      */
     fun remove(tag: String, disposable: Disposable) {
-        var values = map[tag]
+        val values = map[tag]
         values?.let {
             // 移除Disposable
             it.remove(disposable.tag())

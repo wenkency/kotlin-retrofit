@@ -1,10 +1,9 @@
 package com.retrofit.callback
 
 import android.util.Log
-import com.retrofit.api.RestErrorCode
 import com.retrofit.config.RestConfig
 import com.retrofit.core.RestClient
-import com.retrofit.utils.Base64
+import com.retrofit.method.RestErrorCode
 import com.retrofit.utils.writeToDisk
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
@@ -58,22 +57,16 @@ interface IResultCallback {
 
                 Single.just(responseBody)
                     .map {
-                        // 解析和打印
-                        var result = it.string()
+                        // 请求结果，调用了转换，如果需要，可以配置
+                        val result = RestConfig.responseConvertStr(client,it.string())
                         // 打印
                         if (RestConfig.isDebug) {
-                            if (RestConfig.isBase64) {
-                                // 这里得转换一下
-                                result = String(Base64.decode(result))
-                                Log.e("Response", client.url)
-                                Log.e("Body", result)
-                            } else {
-                                Log.e("Response", client.url)
-                                Log.e("Body", result)
-                            }
+                            Log.e("Response", client.url)
+                            Log.e("Body", result)
                         }
 
                         result
+
                     }
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())

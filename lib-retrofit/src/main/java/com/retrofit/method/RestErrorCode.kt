@@ -1,4 +1,4 @@
-package com.retrofit.api
+package com.retrofit.method
 
 object RestErrorCode {
     /**

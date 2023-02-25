@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.ArrayMap
 import android.util.Base64
-
 import android.util.Log
 import androidx.databinding.DataBindingUtil
 import com.hjq.permissions.Permission
@@ -12,15 +11,16 @@ import com.hjq.permissions.XXPermissions
 import com.lven.retrofitkotlin.bean.LoginData
 import com.lven.retrofitkotlin.databinding.ActivityWelcomeBinding
 import com.lven.retrofitkotlin.utils.AlbumUtils
-import com.lven.retrofitkotlin.utils.GlobalUtils
-import com.retrofit.RetrofitPresenter
-import com.retrofit.RxPresenter
+import com.retrofit.ApiClient
+import com.retrofit.RxClient
+import com.retrofit.SuspendClient
 import com.retrofit.callback.BeanCallback
 import com.retrofit.core.RestClient
-import kotlinx.coroutines.*
-
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.disposables.Disposable
+import io.reactivex.rxjava3.observers.DisposableObserver
 import java.io.FileInputStream
-import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
 import kotlin.concurrent.thread
 
 class WelcomeActivity : BaseActivity() {
@@ -36,11 +36,16 @@ class WelcomeActivity : BaseActivity() {
     inner class Click {
         fun login() {
             // 登录接口
-            RxPresenter.postForm(this@WelcomeActivity,
+            val temp = System.currentTimeMillis()
+            SuspendClient.postForm(this@WelcomeActivity,
                 "/user/login", LoginData("lven", "123456"),
                 object : BeanCallback<String>() {
                     override fun onSucceed(data: String, client: RestClient) {
-                        //Log.e("TAG", "$data")
+                        Log.e("TAG", "${System.currentTimeMillis() - temp}")
+                    }
+
+                    override fun onError(code: Int, message: String, client: RestClient) {
+                        Log.e("TAG", "error $message")
                     }
                 })
         }
@@ -48,7 +53,7 @@ class WelcomeActivity : BaseActivity() {
         fun unLogin() {
             // 退出登录
             val url = "/user/logout/json"
-            RxPresenter.get(this@WelcomeActivity, url, object : BeanCallback<String>() {
+            RxClient.get(this@WelcomeActivity, url, object : BeanCallback<String>() {
                 override fun onSucceed(data: String, client: RestClient) {
                     Log.e("TAG", "$data")
                 }
@@ -58,14 +63,17 @@ class WelcomeActivity : BaseActivity() {
 
         fun netTest() {
             // 收藏接口测试-- cookie
-            val url = "/lg/collect/list/0/json"
-            RxPresenter.get(this@WelcomeActivity, url,
+            //val url = "/lg/collect/list/0/json"
+            val url = "http://httpbin.org/get"
+            ApiClient.get(
+                this@WelcomeActivity, url,
                 object : BeanCallback<String>() {
                     override fun onSucceed(data: String, client: RestClient) {
                         Log.e("TAG", "$data")
                     }
 
-                })
+                }, "id", "222"
+            )
         }
 
         // 文件上传
@@ -78,7 +86,7 @@ class WelcomeActivity : BaseActivity() {
         }
 
         fun test() {
-            val countDown = CountDownLatch(4)
+            /*val countDown = CountDownLatch(4)
             val temp = System.currentTimeMillis()
             GlobalUtils.run {
                 delay(10)
@@ -101,7 +109,41 @@ class WelcomeActivity : BaseActivity() {
             }
             countDown.await()
 
-            Log.e("TAG", "test end ${System.currentTimeMillis() - temp}")
+            Log.e("TAG", "test end ${System.currentTimeMillis() - temp}")*/
+
+
+            val d: Disposable = Observable.just("Hello world!")
+                .delay(1, TimeUnit.SECONDS)
+                .subscribeWith(object : DisposableObserver<String?>() {
+                    override fun onStart() {
+                        Log.e("TAG", "onStart")
+                    }
+
+                    override fun onNext(t: String?) {
+                        Log.e("TAG", "onNext $t")
+                    }
+
+                    override fun onError(t: Throwable) {
+                        Log.e("TAG", "onError ${t.message}")
+                    }
+
+                    override fun onComplete() {
+                        Log.e("TAG", "onComplete")
+                    }
+                })
+
+            Thread.sleep(500)
+            // the sequence can now be disposed via dispose()
+            d.dispose()
+
+            Observable.just("Hello world!")
+                .map {
+                    it.length
+                }
+                .subscribe {
+
+                }
+
         }
     }
 
@@ -114,7 +156,7 @@ class WelcomeActivity : BaseActivity() {
         params["p_is_android"] = "1"
         params["data"] = Base64.encode(readBytes, Base64.DEFAULT)
 
-        RetrofitPresenter.postForm(this, url, params, object : BeanCallback<String>() {
+        ApiClient.postForm(this, url, params, object : BeanCallback<String>() {
             override fun onSucceed(data: String, client: RestClient) {
                 Log.e("TAG", data)
             }

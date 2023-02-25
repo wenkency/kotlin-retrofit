@@ -7,7 +7,10 @@ import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import retrofit2.http.*
 
-interface RxRestService {
+/**
+ * Rx方式
+ */
+interface RxService {
     /**
      * GET 用于查询资源
      */

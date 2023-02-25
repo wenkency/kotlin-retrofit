@@ -1,7 +1,7 @@
 package com.lven.retrofitkotlin.presenter
 
 import com.retrofit.IRetrofit
-import com.retrofit.api.RestService
+import com.retrofit.api.ApiService
 import com.retrofit.core.RestCreator
 import okhttp3.OkHttpClient
 
@@ -10,11 +10,15 @@ import okhttp3.OkHttpClient
  */
 object MultiUrlPresenter : IRetrofit {
 
-    override fun getService(): RestService {
+    override fun getService(): ApiService {
         return RestCreator.getService("http://httpbin.org", OkHttpClient())
     }
 
     override fun isRxService(): Boolean {
+        return false
+    }
+
+    override fun isSuspendService(): Boolean {
         return false
     }
 }

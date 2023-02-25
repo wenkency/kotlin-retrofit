@@ -11,8 +11,8 @@ object CancelNetUtils {
      * 根据Activity取消网络
      */
     fun cancel(any: Any) {
-        // 取消在请求的网络
-        var runningCalls = RestCreator.httpClient.dispatcher.runningCalls()
+        // 取消正在请求的网络，一般够用
+        val runningCalls = RestCreator.httpClient.dispatcher.runningCalls()
         if (runningCalls.isNotEmpty()) {
             for (call in runningCalls) {
                 any.tag()?.let {

@@ -1,15 +1,13 @@
 package com.lven.retrofitkotlin
 
 import android.app.Application
-import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Environment
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.lven.retrofitkotlin.compress.CompressImageFactory
-import com.retrofit.RetrofitPresenter
-import com.retrofit.RxPresenter
+import com.retrofit.ApiClient
 import com.retrofit.callback.CallbackAdapter
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
@@ -50,7 +48,7 @@ class WelcomeViewModel(application: Application) : AndroidViewModel(application)
         // 1. 加载网络图片，如果2秒内加载成功，就再显示图片2秒。2秒内加载不成功，到首页
         val url = "https://alifei01.cfp.cn/creative/vcg/800/new/VCG2183b65c6ce-TJY.jpg"
         var dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-        RetrofitPresenter.download(this, url, dir, "image.png",
+        ApiClient.download(this, url, dir, "image.png",
             object : CallbackAdapter() {
                 override fun onProgress(progress: Float, current: Float, total: Float) {
                     //Log.e("TAG", "progress:${progress} :${RxCancelUtils.size()}")

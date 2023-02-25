@@ -1,8 +1,9 @@
 package com.retrofit.core
 
 import com.google.gson.Gson
-import com.retrofit.api.RestService
-import com.retrofit.api.RxRestService
+import com.retrofit.api.RxService
+import com.retrofit.api.ApiService
+import com.retrofit.api.SuspendService
 import com.retrofit.config.RestConfig
 import okhttp3.Cache
 import okhttp3.Dispatcher
@@ -73,33 +74,49 @@ object RestCreator {
         builder.build()
     }
 
+
     /**
      * 使用配置的URL创建请求接口
      */
-    fun getService(): RestService {
+    fun getService(): ApiService {
         return getService(RestConfig.baseUrl)
+    }
+
+    /**
+     * 用户可以根据URL创建请求
+     */
+    fun getService(url: String, client: OkHttpClient = httpClient): ApiService {
+        return getRetrofit(url, client).create(ApiService::class.java)
     }
 
     /**
      * 使用配置的URL创建请求接口
      */
-    fun getRxService(): RxRestService {
+    fun getRxService(): RxService {
         return getRxService(RestConfig.baseUrl)
     }
 
     /**
      * 用户可以根据URL创建请求
      */
-    fun getRxService(url: String, client: OkHttpClient = httpClient): RxRestService {
-        return getRetrofit(url, client).create(RxRestService::class.java)
+    fun getRxService(url: String, client: OkHttpClient = httpClient): RxService {
+        return getRetrofit(url, client).create(RxService::class.java)
+    }
+
+    /**
+     * 使用配置的URL创建请求接口
+     */
+    fun getSuspendService(): SuspendService {
+        return getSuspendService(RestConfig.baseUrl)
     }
 
     /**
      * 用户可以根据URL创建请求
      */
-    fun getService(url: String, client: OkHttpClient = httpClient): RestService {
-        return getRetrofit(url, client).create(RestService::class.java)
+    fun getSuspendService(url: String, client: OkHttpClient = httpClient): SuspendService {
+        return getRetrofit(url, client).create(SuspendService::class.java)
     }
+
 
     private fun getRetrofit(url: String, client: OkHttpClient): Retrofit {
         var retrofit = map[url]

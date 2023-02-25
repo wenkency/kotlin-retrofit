@@ -1,11 +1,11 @@
 package com.lven.retrofitkotlin.presenter
 
-import com.retrofit.RetrofitPresenter
+import android.util.ArrayMap
+import com.lven.retrofitkotlin.bean.Bean
+import com.retrofit.ApiClient
 import com.retrofit.callback.ICallback
 import com.retrofit.callback.IObjectCallback
 import com.retrofit.callback.ObjectCallback
-import com.retrofit.utils.RestUtils
-import com.lven.retrofitkotlin.bean.Bean
 
 object MainPresenter {
     /**
@@ -15,7 +15,7 @@ object MainPresenter {
         activity: Any?, callback: IObjectCallback,
         clazz: Class<*>, requestCode: Int = 1
     ) {
-        val map = RestUtils.getParams()
+        val map = ArrayMap<String, Any>()
         map["id"] = 100
         MultiUrlPresenter.post(
             activity,
@@ -29,13 +29,13 @@ object MainPresenter {
      * get请求
      */
     fun get(activity: Any?, callback: ICallback) {
-        RetrofitPresenter.get(activity, "https://www.baidu.com", callback)
+        ApiClient.get(activity, "https://www.baidu.com", callback)
     }
 
     /**
      * post请求
      */
     fun post(activity: Any?, callback: ICallback) {
-        RetrofitPresenter.post(activity, "post", Bean("100"), callback)
+        ApiClient.post(activity, "post", Bean("100"), callback)
     }
 }

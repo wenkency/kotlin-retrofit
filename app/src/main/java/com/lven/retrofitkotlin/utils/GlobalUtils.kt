@@ -1,16 +1,13 @@
 package com.lven.retrofitkotlin.utils
 
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
-object GlobalUtils {
+object GlobalUtils : CoroutineScope by MainScope() {
     /**
      * 封装
      */
     fun run(default: CoroutineDispatcher = Dispatchers.Default, callback: suspend () -> Unit) {
-        GlobalScope.launch(default) {
+        launch(default) {
             callback()
         }
     }
