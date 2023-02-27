@@ -1,12 +1,12 @@
-package com.retrofit.config
+package com.retrofit.cancel
 
 import com.retrofit.core.RestCreator
 import com.retrofit.tag
 
 /**
- * 网络取消工具类
+ * 普通请求，网络取消工具类
  */
-object CancelNetUtils {
+object ApiCancelUtils {
     /**
      * 根据Activity取消网络
      */

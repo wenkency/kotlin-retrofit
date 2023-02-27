@@ -6,9 +6,8 @@ import android.content.Context
 import android.text.TextUtils
 import androidx.collection.ArrayMap
 import com.retrofit.core.RestClient
+import com.retrofit.lifecycle.RestActivityCallbacks
 import com.retrofit.utils.RestSSLUtils
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.MainScope
 import okhttp3.CookieJar
 import okhttp3.Interceptor
 import javax.net.ssl.HostnameVerifier
@@ -33,8 +32,6 @@ object RestConfig {
         it
     }
 
-    // 这个是协程的作用域
-    var scope: CoroutineScope = MainScope()
 
     // 测试的URL
     private var debugUrl = ""
@@ -138,12 +135,6 @@ object RestConfig {
         this.isDebug = debug
     }
 
-    /**
-     *  协程作用域：一般用默认就好，请求已用TAG方式取消，不用担心
-     */
-    fun scope(scope: CoroutineScope) = apply {
-        this.scope = scope
-    }
 
     /**
      * 应用拦截器

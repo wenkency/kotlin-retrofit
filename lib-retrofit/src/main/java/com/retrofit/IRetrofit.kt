@@ -1,22 +1,25 @@
 package com.retrofit
 
+import android.util.Log
 import androidx.collection.ArrayMap
-import com.retrofit.api.RxService
 import com.retrofit.api.ApiService
+import com.retrofit.api.RxService
 import com.retrofit.api.SuspendService
 import com.retrofit.callback.ICallback
 import com.retrofit.callback.RxServiceCallback
 import com.retrofit.callback.ServiceCallback
 import com.retrofit.config.RestConfig
+import com.retrofit.cancel.SuspendCancelUtils
 import com.retrofit.core.RestClient
 import com.retrofit.core.RestCreator
-import com.retrofit.method.FieldToJson
+import com.retrofit.api.FieldToJson
 import com.retrofit.method.RestMethod
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.coroutines.launch
 import java.io.File
 import java.lang.reflect.Field
+import java.util.concurrent.CancellationException
 
 /**
  * APP网络调用统一封装
@@ -37,7 +40,7 @@ interface IRetrofit {
             .method(method)
             .url(url)
             .headers(headers)
-            .tag(tag.tag())
+            .tag(tag?.tag())
             .params(params)
             .build()
         // 这里分支
@@ -46,7 +49,7 @@ interface IRetrofit {
             rxRequest(client, method, callback, fileDir, fileName, tag.tag())
         } else if (isSuspendService()) {
             // 协程
-            suspendRequest(client, method, callback, fileDir, fileName)
+            suspendRequest(client, method, callback, fileDir, fileName, tag)
         } else {
             // 正常线程
             request(client, method, callback, fileDir, fileName)
@@ -58,10 +61,12 @@ interface IRetrofit {
         method: RestMethod,
         callback: ICallback,
         fileDir: File? = null,
-        fileName: String = ""
+        fileName: String = "",
+        tag: Any?
     ) {
         // 发走请求
-        RestConfig.scope.launch {
+        val scope = SuspendCancelUtils.get(tag)
+        scope.launch {
             // 回调封装
             val serviceCallback = ServiceCallback(
                 callback,
@@ -73,6 +78,10 @@ interface IRetrofit {
             try {
                 val response = client.request(callback, getSuspendService())
                 serviceCallback.onResponse(null, response)
+            } catch (e: CancellationException) {
+                if (RestConfig.isDebug) {
+                    Log.e("TAG", "${e.message}")
+                }
             } catch (e: Throwable) {
                 serviceCallback.onFailure(null, e)
             }
@@ -184,7 +193,7 @@ interface IRetrofit {
     }
 
     fun get(tag: Any? = null, url: String, any: Any, callback: ICallback) {
-        get(any, url, null, any.anyToMap(), callback)
+        get(tag, url, null, any.anyToMap(), callback)
     }
 
     // == post method===================================================================================
@@ -216,7 +225,7 @@ interface IRetrofit {
     }
 
     fun post(tag: Any? = null, url: String, any: Any, callback: ICallback) {
-        post(any, url, null, any.anyToMap(), callback)
+        post(tag, url, null, any.anyToMap(), callback)
     }
 
     // == postForm method===================================================================================
@@ -252,8 +261,8 @@ interface IRetrofit {
         postForm(tag, url, null, params.arrayToMap(), callback)
     }
 
-    fun postForm(tag: Any? = null, url: String, any: Any, callback: ICallback) {
-        postForm(any, url, null, any.anyToMap(), callback)
+    fun postForm(tag: Any? = null, url: String, data: Any, callback: ICallback) {
+        postForm(tag, url, null, data.anyToMap(), callback)
     }
 
     // == put method===================================================================================
@@ -290,7 +299,7 @@ interface IRetrofit {
     }
 
     fun put(tag: Any? = null, url: String, any: Any, callback: ICallback) {
-        put(any, url, null, any.anyToMap(), callback)
+        put(tag, url, null, any.anyToMap(), callback)
     }
 
     // == putForm method===================================================================================
@@ -327,7 +336,7 @@ interface IRetrofit {
     }
 
     fun putForm(tag: Any? = null, url: String, any: Any, callback: ICallback) {
-        putForm(any, url, null, any.anyToMap(), callback)
+        putForm(tag, url, null, any.anyToMap(), callback)
     }
 
     // == delete method===================================================================================
@@ -364,7 +373,7 @@ interface IRetrofit {
     }
 
     fun delete(tag: Any? = null, url: String, any: Any, callback: ICallback) {
-        delete(any, url, null, any.anyToMap(), callback)
+        delete(tag, url, null, any.anyToMap(), callback)
     }
 
     // == upload method===================================================================================
@@ -454,7 +463,8 @@ fun Any.anyToMap(): MutableMap<String, Any> {
             if (!name.contains("$") && name != "serialVersionUID") {
                 field.isAccessible = true
                 val value = field[this]
-                val fieldToJson: FieldToJson? = field.getAnnotation(FieldToJson::class.java)
+                val fieldToJson: FieldToJson? = field.getAnnotation(
+                    FieldToJson::class.java)
                 if (fieldToJson != null) {
                     map[name] = RestCreator.gson.toJson(value)
                 } else {

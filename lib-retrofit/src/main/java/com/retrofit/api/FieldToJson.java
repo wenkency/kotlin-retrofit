@@ -1,4 +1,4 @@
-package com.retrofit.method;
+package com.retrofit.api;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

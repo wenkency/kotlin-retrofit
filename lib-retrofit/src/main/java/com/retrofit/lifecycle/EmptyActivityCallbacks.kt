@@ -1,4 +1,4 @@
-package com.retrofit.config
+package com.retrofit.lifecycle
 
 import android.app.Activity
 import android.app.Application

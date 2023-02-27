@@ -7,7 +7,7 @@ import com.lven.retrofitkotlin.bean.LoginData
 import com.lven.retrofitkotlin.viewmodel.NetViewModel
 import com.retrofit.RxClient
 import com.retrofit.callback.BeanCallback
-import com.retrofit.config.CancelNetUtils
+import com.retrofit.cancel.ApiCancelUtils
 import com.retrofit.core.RestClient
 
 /**
@@ -71,6 +71,6 @@ class BindingViewModel : NetViewModel() {
      */
     override fun onCleared() {
         // 取消网络请求
-        CancelNetUtils.cancel(this)
+        ApiCancelUtils.cancel(this)
     }
 }

@@ -1,6 +1,6 @@
 
 -keep class *{
-@com.retrofit.method.FieldToJson <fields>;
+@com.retrofit.api.FieldToJson <fields>;
 }
 
 # Retrofit=================

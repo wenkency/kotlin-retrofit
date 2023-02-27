@@ -1,7 +1,7 @@
 package com.retrofit.callback
 
 
-import com.retrofit.config.RxCancelUtils
+import com.retrofit.cancel.RxCancelUtils
 import com.retrofit.core.RestClient
 import io.reactivex.rxjava3.core.SingleObserver
 import io.reactivex.rxjava3.disposables.Disposable
