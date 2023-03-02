@@ -37,6 +37,7 @@ class WelcomeActivity : BaseActivity() {
         fun login() {
             // 登录接口
             val temp = System.currentTimeMillis()
+            // SuspendClient 走的是协程请求
             SuspendClient.postForm(this@WelcomeActivity,
                 "/user/login", LoginData("lven", "123456"),
                 object : BeanCallback<String>() {
@@ -53,6 +54,7 @@ class WelcomeActivity : BaseActivity() {
         fun unLogin() {
             // 退出登录
             val url = "/user/logout/json"
+            // RxClient 走的是Rxjava请求
             RxClient.get(this@WelcomeActivity, url, object : BeanCallback<String>() {
                 override fun onSucceed(data: String, client: RestClient) {
                     Log.e("TAG", "$data")
@@ -65,6 +67,7 @@ class WelcomeActivity : BaseActivity() {
             // 收藏接口测试-- cookie
             //val url = "/lg/collect/list/0/json"
             val url = "http://httpbin.org/get"
+            // ApiClient 普通异步请求
             ApiClient.get(
                 this@WelcomeActivity, url,
                 object : BeanCallback<String>() {

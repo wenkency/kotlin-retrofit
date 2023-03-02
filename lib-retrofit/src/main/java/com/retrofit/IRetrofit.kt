@@ -64,7 +64,7 @@ interface IRetrofit {
         fileName: String = "",
         tag: Any?
     ) {
-        // 发走请求
+        // 根据TAG
         val scope = SuspendCancelUtils.get(tag)
         scope.launch {
             // 回调封装
