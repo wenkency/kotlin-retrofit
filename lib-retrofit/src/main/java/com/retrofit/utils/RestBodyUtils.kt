@@ -29,12 +29,14 @@ fun multipartBody(params: MutableMap<String, Any>, callback: ICallback): Multipa
             is File -> {
                 fileToBody(builder, key, value, callback)
             }
+
             is List<*> -> {
                 val files: List<File> = value as List<File>
                 for (file in files) {
                     fileToBody(builder, key, file, callback)
                 }
             }
+
             else -> {
                 // 这里没有调用加密
                 builder.addFormDataPart(key, value.toString())
@@ -49,7 +51,7 @@ fun multipartBody(params: MutableMap<String, Any>, callback: ICallback): Multipa
  */
 fun requestBody(client: RestClient): RequestBody {
     // 请求数据 ，调用了转换如果需要，可以配置
-    val content = RestConfig.requestConvertStr(client, RestCreator.gson.toJson(client.params))
+    val content = client.requestConvert(RestCreator.gson.toJson(client.params))
 
     return content.toRequestBody("application/json;charset=UTF-8".toMediaType())
 }

@@ -40,8 +40,12 @@ interface IRetrofit {
             .method(method)
             .url(url)
             .headers(headers)
-            .tag(tag?.tag())
+            .headers(commHeaders())// 公共请求头
             .params(params)
+            .params(commParams())// 公共请求参数
+            .tag(tag?.tag())
+            .requestConvert(::requestConvert) // 请求转换
+            .responseConvert(::responseConvert)// 响应转换
             .build()
         // 这里分支
         if (isRxService()) {
@@ -162,6 +166,34 @@ interface IRetrofit {
      * 是不是协程方式
      */
     fun isSuspendService(): Boolean
+
+    /**
+     * 公共请求头
+     */
+    fun commHeaders(): MutableMap<String, String>? {
+        return null
+    }
+
+    /**
+     * 公共请求参数
+     */
+    fun commParams(): MutableMap<String, Any>? {
+        return null
+    }
+
+    /**
+     * 请求转换
+     */
+    fun requestConvert(client: RestClient, data: String): String {
+        return data
+    }
+
+    /**
+     * 响应转换
+     */
+    fun responseConvert(client: RestClient, data: String): String {
+        return data
+    }
 
 
     // == get method===================================================================================
@@ -464,7 +496,8 @@ fun Any.anyToMap(): MutableMap<String, Any> {
                 field.isAccessible = true
                 val value = field[this]
                 val fieldToJson: FieldToJson? = field.getAnnotation(
-                    FieldToJson::class.java)
+                    FieldToJson::class.java
+                )
                 if (fieldToJson != null) {
                     map[name] = RestCreator.gson.toJson(value)
                 } else {

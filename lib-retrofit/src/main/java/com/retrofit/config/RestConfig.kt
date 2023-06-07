@@ -22,15 +22,7 @@ object RestConfig {
     lateinit var context: Context
     var isDebug = false
 
-    // 请求数据转换，默认是返回自己
-    private var requestConvert: (RestClient, String) -> String = { _, it ->
-        it
-    }
 
-    // 响应数据转换，默认是返回自己
-    private var responseConvert: (RestClient, String) -> String = { _, it ->
-        it
-    }
 
 
     // 测试的URL
@@ -61,15 +53,6 @@ object RestConfig {
      */
     private var activityCallbacks: RestActivityCallbacks? = null
 
-    /**
-     * 公共请求头
-     */
-    val commHeaders: MutableMap<String, String> = ArrayMap()
-
-    /**
-     * 公共请求参数
-     */
-    val commParams: MutableMap<String, Any> = ArrayMap()
 
     // 默认主机验证
     var hostnameVerifier: HostnameVerifier = HostnameVerifier { _, _ -> true }
@@ -90,30 +73,6 @@ object RestConfig {
         this.debugUrl = debugUrl
     }
 
-    /**
-     * 请求转换，比如加密要解密，就统一在这里操作
-     */
-    fun requestConvert(convert: (RestClient, String) -> String) = apply {
-        this.requestConvert = convert
-    }
-
-    /**
-     * 请求转换
-     */
-    fun requestConvertStr(client: RestClient, data: String): String {
-        return requestConvert(client, data)
-    }
-
-    /**
-     * 响应转换，比如加密要解密，就统一在这里操作
-     */
-    fun responseConvert(convert: (RestClient, String) -> String) = apply {
-        this.responseConvert = convert
-    }
-
-    fun responseConvertStr(client: RestClient, data: String): String {
-        return responseConvert(client, data)
-    }
 
     /**
      * 主机校验
@@ -150,19 +109,7 @@ object RestConfig {
         netInterceptors.add(interceptor)
     }
 
-    /**
-     * 公共请求头
-     */
-    fun commHeaders(commHeaders: Map<String, String>) = apply {
-        this.commHeaders += commHeaders
-    }
 
-    /**
-     * 公共请求参数
-     */
-    fun commParams(commParams: Map<String, Any>) = apply {
-        this.commParams += commParams
-    }
 
     /**
      * 注册，目的是监控网络在生命周期销毁时，自动取消

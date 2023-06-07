@@ -23,8 +23,7 @@ class BaseApplication : Application() {
         // http://httpbin.org
         RestConfig.baseUrl("https://www.wanandroid.com")
             .debugUrl("https://www.wanandroid.com")
-            .debug(BuildConfig.DEBUG)
-            .responseConvert(::convert)
+            .debug(true)
             //.interceptor(ProgressInterceptor())
             .netInterceptor(logInterceptor) // 打印Log日志
             .netInterceptor(CacheInterceptor(3)) // 3秒内再请求，走缓存,get请求生效，post不生效

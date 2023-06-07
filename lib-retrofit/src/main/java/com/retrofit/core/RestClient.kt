@@ -11,30 +11,19 @@ import io.reactivex.rxjava3.core.Single
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Response
+import kotlin.reflect.KFunction2
 
 
 /**
  * API 客户端，请求的信息都在这里
  */
-class RestClient(builder: RestfulBuilder) {
+class RestClient(private val builder: RestfulBuilder) {
     val url: String = builder.url
     val headers: MutableMap<String, String> = builder.headers
     val params: MutableMap<String, Any> = builder.params
     val tag: String = builder.tag
     val method: RestMethod = builder.method
 
-    init {
-        // 统一添加公共头
-        var commHeaders = RestConfig.commHeaders
-        if (commHeaders.isNotEmpty()) {
-            this.headers += commHeaders
-        }
-        // 统一添加公共参数
-        var commParams = RestConfig.commParams
-        if (commParams.isNotEmpty()) {
-            this.params += commHeaders
-        }
-    }
 
     /**
      * 发起请求
@@ -57,12 +46,36 @@ class RestClient(builder: RestfulBuilder) {
         return RestCall(this).rxRequest(callback, service)
     }
 
+    /**
+     * 请求转换
+     */
+    fun requestConvert(data: String): String {
+        return builder.requestConvert(this, data)
+    }
+
+    /**
+     * 响应转换
+     */
+    fun responseConvert(data: String): String {
+        return builder.responseConvert(this, data)
+    }
+
     class RestfulBuilder {
         internal var url: String = ""
         internal var tag: String = ""
         internal var method = RestMethod.POST
         internal val headers = ArrayMap<String, String>()
         internal val params = ArrayMap<String, Any>()
+
+        // 请求数据转换，默认是返回自己
+        internal var requestConvert: (RestClient, String) -> String = { _, it ->
+            it
+        }
+
+        // 响应数据转换，默认是返回自己
+        internal var responseConvert: (RestClient, String) -> String = { _, it ->
+            it
+        }
 
         fun url(url: String) = apply {
             this.url = url
@@ -92,6 +105,14 @@ class RestClient(builder: RestfulBuilder) {
 
         fun build(): RestClient {
             return RestClient(this)
+        }
+
+        fun requestConvert(requestConvert: (RestClient, String) -> String) = apply {
+            this.requestConvert = requestConvert
+        }
+
+        fun responseConvert(responseConvert: (RestClient, String) -> String) = apply {
+            this.responseConvert = responseConvert
         }
     }
 }

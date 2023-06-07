@@ -6,8 +6,8 @@ plugins {
 apply from: "${rootDir}/config.gradle"
 
 // === 远程仓库配置 ===
-def libVersionCode = 324
-def libVersionName = '3.2.4'
+def libVersionCode = 325
+def libVersionName = '3.2.5'
 group = 'com.github.wenkency'
 version = libVersionName
 

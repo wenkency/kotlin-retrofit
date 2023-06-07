@@ -58,7 +58,7 @@ interface IResultCallback {
                 Single.just(responseBody)
                     .map {
                         // 请求结果，调用了转换，如果需要，可以配置
-                        val result = RestConfig.responseConvertStr(client,it.string())
+                        val result = client.responseConvert(it.string())
                         // 打印
                         if (RestConfig.isDebug) {
                             Log.e("Response", client.url)

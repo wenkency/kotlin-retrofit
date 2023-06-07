@@ -19,7 +19,7 @@ allprojects {
     }
 }
 // 依赖
-implementation 'com.github.wenkency:kotlin-retrofit:3.2.4'
+implementation 'com.github.wenkency:kotlin-retrofit:3.2.5'
 // retrofit + okhttp + rxjava3
 implementation 'com.squareup.retrofit2:retrofit:2.9.0'
 implementation 'com.squareup.retrofit2:adapter-rxjava3:2.9.0'
@@ -64,12 +64,49 @@ public class BaseApplication extends Application {
         RestConfig.baseUrl("http://httpbin.org/")
                 .debugUrl("http://httpbin.org/")
                 .debug(true)
-                .setCommHeaders(null) // 添加公共请求头，根据项目自己添加
-                .setCommParams(null)// 添加公共请求参数，根据项目自己添加
-                .addInterceptor(interceptor)
-                // 可设置10内再次请求，走缓存
-                // .addNetInterceptor(new CacheInterceptor(10))
                 .register(this);
+    }
+}
+```
+### 核心类API参考类
+```
+/**
+ * 普通网络请求,如果有扩展就继承IRetrofit，参照这个类来写
+ * 比如有多个BaseURL，重写getService()方法就可以了
+ */
+object ApiClient : IRetrofit {
+    // 是不是Rx方式
+    override fun isRxService(): Boolean {
+        return false
+    }
+
+    // 是不是协程方式
+    override fun isSuspendService(): Boolean {
+        return false
+    }
+
+    // 公共请求头
+    override fun commHeaders(): MutableMap<String, String>? {
+        return null
+    }
+
+    // 公共请求参数
+    override fun commParams(): MutableMap<String, Any>? {
+        return null
+    }
+
+    // 请求转换
+    override fun requestConvert(client: RestClient, data: String): String {
+        // 有特殊需求，比如要Base64加密，就可以在这里统一处理
+        // client 处理一些特殊的请求，要用client判断
+        return data
+    }
+
+    // 响应转换
+    override fun responseConvert(client: RestClient, data: String): String {
+        // 有特殊需求，比如要Base64解密，就可以在这里统一处理
+        // client 处理一些特殊的请求，要用client判断
+        return data
     }
 }
 ```
