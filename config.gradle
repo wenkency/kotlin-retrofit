@@ -6,7 +6,7 @@ project.ext {
     // SDK指向版本
     targetSdkVersion = 32
     // 支持最低版本
-    minSdkVersion = 14
+    minSdkVersion = 19
 
     applicationId = "com.lven.retrofitkotlin"
 
