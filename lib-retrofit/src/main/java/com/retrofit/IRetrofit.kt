@@ -3,16 +3,16 @@ package com.retrofit
 import android.util.Log
 import androidx.collection.ArrayMap
 import com.retrofit.api.ApiService
+import com.retrofit.api.FieldToJson
 import com.retrofit.api.RxService
 import com.retrofit.api.SuspendService
 import com.retrofit.callback.ICallback
 import com.retrofit.callback.RxServiceCallback
 import com.retrofit.callback.ServiceCallback
-import com.retrofit.config.RestConfig
 import com.retrofit.cancel.SuspendCancelUtils
+import com.retrofit.config.RestConfig
 import com.retrofit.core.RestClient
 import com.retrofit.core.RestCreator
-import com.retrofit.api.FieldToJson
 import com.retrofit.method.RestMethod
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -160,12 +160,12 @@ interface IRetrofit {
     /**
      * 这个方法控制是不是RX加载
      */
-    fun isRxService(): Boolean
+    fun isRxService(): Boolean = false
 
     /**
      * 是不是协程方式
      */
-    fun isSuspendService(): Boolean
+    fun isSuspendService(): Boolean = false
 
     /**
      * 公共请求头

@@ -1,5 +1,6 @@
 package com.retrofit
 
+import com.retrofit.api.ApiService
 import com.retrofit.core.RestClient
 
 /**
@@ -15,6 +16,11 @@ object ApiClient : IRetrofit {
     // 是不是协程方式
     override fun isSuspendService(): Boolean {
         return false
+    }
+
+    // 创建服务
+    override fun getService(): ApiService {
+        return super.getService()
     }
 
     // 公共请求头
